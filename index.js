@@ -81,7 +81,7 @@ async function runCmd(event, params, plugin) {
 
 plugin.onMounted(() => {
     plugin.onCmd('/reboot', (event, params) => reboot(event, params, plugin))
-    plugin.onAdminCmd('/cmd', (event, params) => runCmd(event, params, plugin))
+    plugin.onCmd('/cmd', (event, params) => runCmd(event, params, plugin))
 })
 
 module.exports = { plugin }
