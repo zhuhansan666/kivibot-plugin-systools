@@ -20,7 +20,7 @@ function isAdmin(event, mainOnly = false) {
 
 async function reboot(event, params, plugin) {
     // 是否是主管理员
-    const isMainAdmin = isAdmin(true);
+    const isMainAdmin = isAdmin(event, true);
 
     // console.log(params)
     secondCmd = params[0]

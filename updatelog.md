@@ -12,3 +12,6 @@
 
 # V0.0.5 修复`/cmd`命令bug
 * 修复ReferenceError: otherCmds is not defined(index.js:69:25)
+
+# V0.0.6 修复插件版本显示错误
+* 修复插件版本在qq显示错误的问题
