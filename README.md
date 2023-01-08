@@ -9,8 +9,8 @@
 # 如何安装
 ## 安装
 ``npm install kivibot-plugin-reboot-tools`` <br>
-或在qq对机器人发送
-``/p add reboot-tools(等价于/plugin add reboot-tools)`` <br>
+或在qq对机器人发送 <br>
+``/p add reboot-tools(等价于/plugin add reboot-tools)``
 
 ## 启用
 ``/p on reboot-tools(等价于/plugin on reboot-tools)``
