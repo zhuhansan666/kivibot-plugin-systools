@@ -1,0 +1,17 @@
+{
+    "name": "kivibot-plugin-reboot-tools",
+    "version": "0.0.1",
+    "description": "重启小助手",
+    "main": "index.js",
+    "scripts": {
+        "test": "index.js"
+    },
+    "keywords": [
+        "node.js",
+        "javascript",
+        "kivi",
+        "kivibot"
+    ],
+    "author": "爱喝牛奶の涛哥",
+    "license": "AGPL-3.0-or-later"
+}
