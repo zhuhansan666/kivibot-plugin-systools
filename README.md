@@ -1,4 +1,5 @@
 # kivibot-plugin-reboot-tools
+## 这是<del>重启小助手</del>我进化啦！这将会是一个新人从0到1的见证 (确信 \[至于为什么还叫重启小助手是因为我不会在npm重命名(]
 
 # 我们能做什么
 * 给kivibot安装上本插件
@@ -25,3 +26,14 @@
 
 # Know issues / 已知问题
 * 使用`/cmd`运行长时间交互式界面(如`python`/`ipython`/`node`)不会有返回值, 线程阻塞, 但不影响其他功能, `/cmd`任可正常使用
+
+# Todo
+<!-- ## 内部
+## 外部 -->
+### 暂时不知道做什么
+### 有建议可以发邮件 public.zhuhansan666@outlook.com 备注 reboot-tools:suggest
+
+
+# issue / bug 反馈
+### 您可以直接在[我的github](https://github.com/zhuhansan666/kivibot-plugin-reboot-tools)提出issue
+### 但是我不常看github, 推荐发送邮件 public.zhuhansan666@outlook.com 备注 reboot-tools:bug
