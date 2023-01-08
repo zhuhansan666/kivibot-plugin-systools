@@ -15,3 +15,6 @@
 
 # V0.0.6 修复插件版本显示错误
 * 修复插件版本在qq显示错误的问题
+* 修复TypeError: Cannot read properties of undefined (reading 'user_id')(index.js:23:25))
+
+# V0.0.7 修复部分场景命令识别不正确的问题

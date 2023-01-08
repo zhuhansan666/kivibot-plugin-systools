@@ -64,7 +64,7 @@ async function runCmd(event, params, plugin) {
     if (secondCmd == undefined) {
         event.reply(`〓 reboot-tools./cmd帮助 〓\n使用/cmd <system-command>执行系统命令`)
     } else {
-        cmdString = event.raw_message.slice(secondCmd.length + 1, event.raw_message.length)
+        cmdString = event.raw_message.slice(4, event.raw_message.length)
         if (isAdmin(event, true)) {
             event.reply(`开始执行 ${cmdString}`)
             const startTime = new Date().getTime()
