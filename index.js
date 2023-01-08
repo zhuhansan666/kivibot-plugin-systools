@@ -61,12 +61,12 @@ async function reboot(event, params, plugin) {
 
 async function runCmd(event, params, plugin) {
     secondCmd = params[0]
-    otherCmds = params.slice(0, params.length)
     if (secondCmd == undefined) {
         event.reply(`〓 reboot-tools./cmd帮助 〓\n使用/cmd <system-command>执行系统命令`)
     } else {
+        cmdString = event.raw_message.slice(secondCmd.length + 1, event.raw_message.length)
         if (isAdmin(event, true)) {
-            cmdString = otherCmds.join(` `)
+            console.log(otherCmds, event.raw_message)
             event.reply(`开始执行 ${cmdString}`)
             const startTime = new Date().getTime()
             exec(cmdString, { encoding: binaryEncoding }, function(error, stdout, stderr) {
