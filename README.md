@@ -2,14 +2,18 @@
 
 # 我们能做什么
 * 给kivibot安装上本插件
-* 使用/reboot help看查帮助
-* /reboot sys/system  ->  重启系统
-* /reboot bot/kivi  ->  重启框架
+* 使用`/reboot help`看查帮助
+* `/reboot sys/system`  ->  重启系统
+* `/reboot bot/kivi`  ->  重启框架
 
 # 如何安装
-`npm install kivibot-plugin-reboot-tools`
+## 安装
+``npm install kivibot-plugin-reboot-tools``
 或在qq对机器人发送
-`/p add reboot-tools(等价于/plugin add reboot-tools)`
+``/p add reboot-tools(等价于/plugin add reboot-tools)``
+## 启用
+``/p on reboot-tools(等价于/plugin on reboot-tools)``
+
 
 # 如何使用
 * `/reboot help`  ->  看查/reboot帮助

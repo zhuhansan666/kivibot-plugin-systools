@@ -18,3 +18,7 @@
 * 修复TypeError: Cannot read properties of undefined (reading 'user_id')(index.js:23:25))
 
 # V0.0.7 修复部分场景命令识别不正确的问题
+* 修复部分场景命令识别不正确的问题
+
+# V0.0.8 更新`README.md`
+* 更新`README.md`

@@ -30,12 +30,12 @@ async function reboot(event, params, plugin) {
         if (isMainAdmin) {
             if (secondCmd == "sys" || secondCmd == "system") {
                 if (os.type() == "Linux" || os.type() == "Darwin") {
-                    event.reply(`开始运行 "shutdown /f /r /t 3"`)
+                    event.reply(`〓 开始运行 "reboot" 〓`)
                     exec("reboot", function(error, stdout, stderr) {
                         event.reply(`运行 "reboot": ${error}, ${stdout}, ${stderr}`)
                     });
                 } else {
-                    event.reply(`开始运行 "shutdown /f /r /t 3"`)
+                    event.reply(`〓 开始运行 "shutdown /f /r /t 3" 〓`)
                     exec("shutdown /f /r /t 3", function(error, stdout, stderr) {
                         event.reply(`运行 "shutdown /f /r /t 3": ${error}, ${stdout}, ${stderr}`)
                     });
@@ -43,7 +43,7 @@ async function reboot(event, params, plugin) {
             } else {
                 if (secondCmd == "bot" || secondCmd == "kivi") {
                     // event.reply(`暂不支持`)
-                    event.reply(`开始运行 "kivi deploy -f"`)
+                    event.reply(`〓 开始运行 "kivi deploy -f" 〓`)
                     exec("kivi deploy -f", function(error, stdout, stderr) {
                         event.reply(`运行 "kivi deploy -f": ${error}, ${stdout}, ${stderr}`)
                         process.exit()
@@ -53,7 +53,7 @@ async function reboot(event, params, plugin) {
                 }
             }
         } else {
-            event.reply(`Permission Error: 非主管理员`)
+            event.reply(`〓 Permission Error: 非主管理员 〓`)
         }
     }
 
@@ -64,9 +64,9 @@ async function runCmd(event, params, plugin) {
     if (secondCmd == undefined) {
         event.reply(`〓 reboot-tools./cmd帮助 〓\n使用/cmd <system-command>执行系统命令`)
     } else {
-        cmdString = event.raw_message.slice(4, event.raw_message.length)
+        cmdString = event.raw_message.slice(5, event.raw_message.length)
         if (isAdmin(event, true)) {
-            event.reply(`开始执行 ${cmdString}`)
+            event.reply(`〓 开始执行 ${cmdString} 〓`)
             const startTime = new Date().getTime()
             exec(cmdString, { encoding: binaryEncoding }, function(error, stdout, stderr) {
                         stdout = iconv.decode(new Buffer.from(stdout, binaryEncoding), encoding)
