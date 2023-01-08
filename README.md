@@ -7,5 +7,4 @@
 * /reboot bot/kivi  ->  重启框架
 
 # 如何安装
-* N/A
-  
+`npm install kivibot-plugin-reboot-tools`
