@@ -7,7 +7,7 @@ const encoding = 'cp936';
 const binaryEncoding = 'binary';
 
 const { version } = require('./package.json')
-const plugin = new KiviPlugin('reboot-tools', '0.0.1')
+const plugin = new KiviPlugin('reboot-tools', version)
 
 function isAdmin(event, mainOnly = false) {
     if (mainOnly) {

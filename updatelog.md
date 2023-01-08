@@ -11,4 +11,4 @@
 * 修复`/cmd`后命令子项以`/\-*`等开头导致命令子项缺失的问题 (如`/cmd ping -c 4 xxx.com`会识别为`/cmd ping 4 xxx.com`)
 
 # V0.0.5 修复`/cmd`命令bug
-* 修复ReferenceError: otherCmds is not defined(index.js:69:25))
+* 修复ReferenceError: otherCmds is not defined(index.js:69:25)
