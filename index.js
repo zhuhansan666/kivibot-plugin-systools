@@ -66,7 +66,6 @@ async function runCmd(event, params, plugin) {
     } else {
         cmdString = event.raw_message.slice(secondCmd.length + 1, event.raw_message.length)
         if (isAdmin(event, true)) {
-            console.log(otherCmds, event.raw_message)
             event.reply(`开始执行 ${cmdString}`)
             const startTime = new Date().getTime()
             exec(cmdString, { encoding: binaryEncoding }, function(error, stdout, stderr) {
