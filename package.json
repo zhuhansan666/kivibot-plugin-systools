@@ -1,6 +1,6 @@
 {
     "name": "kivibot-plugin-reboot-tools",
-    "version": "0.0.9",
+    "version": "0.1.0",
     "description": "重启小助手",
     "main": "index.js",
     "scripts": {
