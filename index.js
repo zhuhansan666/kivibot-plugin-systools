@@ -2,9 +2,15 @@ const about_string = `〓 关于reboot-tools 〓
 本插件由"爱喝牛奶の涛哥"制作, 使用commonjs标准
 本插件完全免费, bug反馈可发送邮件至public.zhuhansan666@outlook.com 备注 reboot-tools:bug
 本插件采用GNU3.0协议, 请自觉遵循
+
+〓 源码 〓
+Github: https://github.com/zhuhansan666/kivibot-plugin-reboot-tools
+Gitee: https://gitee.com/zhu-hansan/kivibot-plugin-reboot-tools
+
 〓 联系我 〓
 爱喝牛奶の涛哥@Bilibili: https://space.bilibili.com/687039517
 爱喝牛奶の涛哥@Github: https://github.com/zhuhansan666
+爱喝牛奶の涛哥@Gitee: https://gitee.com/zhu-hansan
 爱喝牛奶の涛哥@outlook: public.zhuhansan666@outlook.com
 
 感谢您对本插件的支持, 有什么建议和bug可以在Github提出或发送邮件并备注(备注内容详见README文件)
