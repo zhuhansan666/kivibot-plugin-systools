@@ -163,7 +163,7 @@ function alias_rm(event, params, plugin) {
         let arr = config[thirdCmd.slice(1, thirdCmd.length)]
         if (arr != undefined) {
             if (isAliasCmd(thirdCmd)) {
-                event.reply("〓 ${secondCmd}=>${fouthCmd} 设置失败 〓\n[WARN]本命令不得指向")
+                event.reply(`〓 ${secondCmd}=>${fouthCmd} 设置失败 〓\n[WARN]本命令不得指向`)
                 return
             }
             if (secondCmd.indexOf("/") == 0) {
