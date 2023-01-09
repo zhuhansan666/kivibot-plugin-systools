@@ -18,11 +18,27 @@ function isAdmin(event, mainOnly = false) {
 
 }
 
-async function reboot(event, params, plugin) {
+async function hooker(event, params, plugin, func) {
+    /**
+     * 本函数用于hook错误, 在发生错误时发送错误信息到qq
+     */
+    try {
+        func(event, params, plugin)
+    } catch (error) {
+        try {
+            var funcname = func.name
+        } catch (err) {
+            var funcname = undefined
+        }
+        const msg = `〓 运行"${funcname}"发生错误: 〓\n${error.stack}\n(如有需要请发送邮件至开发者 public.zhuhansan666@outlook.com 备注 reboot-tools:bug)`
+        event.reply(msg)
+    }
+}
+
+function reboot(event, params, plugin) {
     // 是否是主管理员
     const isMainAdmin = isAdmin(event, true);
 
-    // console.log(params)
     secondCmd = params[0]
     if (secondCmd == "help") {
         event.reply(`〓 reboot-tools./reboot 帮助 〓\n/reboot sys/system  ->  重启系统\n/reboot bot/kivi  ->  重启框架`)
@@ -62,7 +78,7 @@ async function reboot(event, params, plugin) {
 
 }
 
-async function runCmd(event, params, plugin) {
+function runCmd(event, params, plugin) {
     secondCmd = params[0]
     if (secondCmd == undefined) {
         event.reply(`〓 reboot-tools./cmd帮助 〓\n使用/cmd <system-command>执行系统命令`)
@@ -83,8 +99,9 @@ async function runCmd(event, params, plugin) {
 }
 
 plugin.onMounted(() => {
-    plugin.onCmd('/reboot', (event, params) => reboot(event, params, plugin))
-    plugin.onCmd('/cmd', (event, params) => runCmd(event, params, plugin))
+    plugin.onCmd('/reboot', (event, params) => hooker(event, params, plugin, reboot))
+    plugin.onCmd('/cmd', (event, params) => hooker(event, params, plugin, runCmd))
+    // plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, undefined)) //  用于错误信息测试
 })
 
 module.exports = { plugin }
