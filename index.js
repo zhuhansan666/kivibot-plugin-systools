@@ -13,7 +13,8 @@ const about_string = `〓 关于reboot-tools 〓
 const first_time = `〓 reboot-tools警告 〓
 由于本插件会对系统进行操作(开关机), 使用前请仔细阅读README_md帮助文档, 获取Github连接请输入/about
 否则任何因使用不当造成的后果本人概不负责
-                开发者: 爱喝牛奶の涛哥 20230109`
+\t\t\t\t\t\t\t\t开发者: 爱喝牛奶の涛哥 20230109
+*该信息将在距离插件安装0.5小时后不在提示`
 
 const os = require("node:os")
 const exec = require('child_process').exec;
@@ -24,7 +25,7 @@ const encoding = 'cp936';
 const binaryEncoding = 'binary';
 
 const config = {
-    "start-at-first-time": true,
+    "start-time": new Date().getTime(),
     "commands": {
         "cmd": ["/cmd", "/c"],
         "reboot": ["/reboot", "/r"],
@@ -225,9 +226,10 @@ function about(event, params, plugin) {
 }
 
 function checkStartAtFirstTime(event, plugin) {
-    if (config["start-at-first-time"] === true) {
+    if (config["start-time"] != false && new Date().getTime() - config["start-time"] <= 0.5 * 3600 * 1000) {
         event.reply(first_time)
-        config["start-at-first-time"] = false
+    } else {
+        config["start-time"] = false
         plugin.saveConfig(config)
     }
 }
@@ -238,7 +240,9 @@ plugin.onMounted(() => {
     plugin.onCmd(config["commands"]["cmd"], (event, params) => hooker(event, params, plugin, runCmd))
     plugin.onCmd(config["commands"]["alias"], (event, params) => hooker(event, params, plugin, alias))
     plugin.onCmd(config["commands"]["about"], (event, params) => hooker(event, params, plugin, about))
-    plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, undefined)) //  用于错误信息测试
+    plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, (event, params, plugin) => {
+        throw Error("错误测试")
+    })) //  用于错误信息测试
 })
 
 plugin.onUnmounted(() => {
