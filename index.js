@@ -41,7 +41,7 @@ async function hooker(event, params, plugin, func) {
         } catch (err) {
             var funcname = undefined
         }
-        const msg = `〓 运行"${funcname}"发生错误: 〓\n${error.stack}\n(如有需要请发送邮件至开发者 public.zhuhansan666@outlook.com 备注 reboot-tools:bug)`
+        const msg = `〓 糟糕！运行"${funcname}"发生错误, 请您坐和放宽, 下面是详细错误信息 〓\n${error.stack}\n(如有需要请发送邮件至开发者 public.zhuhansan666@outlook.com 备注 reboot-tools:bug)`
         event.reply(msg)
     }
 }
@@ -52,7 +52,7 @@ function reboot(event, params, plugin) {
 
     secondCmd = params[0]
     if (secondCmd == "help") {
-        event.reply(`〓 reboot-tools./reboot 帮助 〓\n/reboot sys/system  ->  重启系统\n/reboot bot/kivi  ->  重启框架`)
+        event.reply(`〓 reboot-tools./reboot 帮助 〓\n/reboot sys/system  ->  重启系统\n/reboot bot/kivi  ->  重启框架(此指令不稳定, 建议deploy模式下直接/exit重启机器人)`)
     } else {
         if (isMainAdmin) {
             if (secondCmd == "sys" || secondCmd == "system") {
@@ -204,7 +204,7 @@ plugin.onMounted(() => {
     plugin.onCmd(config["reboot"], (event, params) => hooker(event, params, plugin, reboot))
     plugin.onCmd(config["cmd"], (event, params) => hooker(event, params, plugin, runCmd))
     plugin.onCmd(config["alias"], (event, params) => hooker(event, params, plugin, alias))
-    // plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, undefined)) //  用于错误信息测试
+    plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, undefined)) //  用于错误信息测试
 })
 
 plugin.onUnmounted(() => {
