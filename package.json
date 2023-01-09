@@ -1,6 +1,6 @@
 {
     "name": "kivibot-plugin-reboot-tools",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "description": "<del>重启小助手</del>我进化啦！这将会是一个新人从0到1的见证 (确信 [至于为什么还叫重启小助手是因为我不会在npm重命名(]",
     "main": "index.js",
     "scripts": {

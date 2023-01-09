@@ -21,8 +21,8 @@
 
 # 如何使用
 * `/reboot help`  ->  看查/reboot帮助
-* `/reboot sys/system`  ->  重启系统
-* `/reboot bot/kivi`  ->  重启框架
+* `/reboot sys或system`  ->  重启系统
+* `/reboot bot或kivi`  ->  重启框架
 * `/cmd`  ->  看查/cmd帮助
 * `/cmd <system-command>`  ->  运行系统命令(此处<...>代表命令, 无需在调用时包含)
 * `/alias`  ->  看查其帮助

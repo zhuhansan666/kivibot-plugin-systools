@@ -1,4 +1,4 @@
-const about_string = `〓 关于 〓
+const about_string = `〓 关于reboot-tools 〓
 本插件由"爱喝牛奶の涛哥"制作, 使用commonjs标准
 本插件完全免费, bug反馈可发送邮件至public.zhuhansan666@outlook.com 备注 reboot-tools:bug
 本插件采用GNU3.0协议, 请自觉遵循
