@@ -1,3 +1,15 @@
+const about_string = `〓 关于 〓
+本插件由"爱喝牛奶の涛哥"制作, 使用commonjs标准
+本插件完全免费, bug反馈可发送邮件至public.zhuhansan666@outlook.com 备注 reboot-tools:bug
+本插件采用GNU3.0协议, 请自觉遵循
+〓 联系我 〓
+爱喝牛奶の涛哥@Bilibili: https://space.bilibili.com/687039517
+爱喝牛奶の涛哥@Github: https://github.com/zhuhansan666
+爱喝牛奶の涛哥@outlook: public.zhuhansan666@outlook.com
+
+感谢您对本插件的支持, 有什么建议和bug可以在Github提出或发送邮件并备注(备注内容详见README文件)
+`
+
 const os = require("node:os")
 const exec = require('child_process').exec;
 const { KiviPlugin, segment, http } = require('@kivibot/core')
@@ -9,7 +21,8 @@ const binaryEncoding = 'binary';
 const config = {
     "cmd": ["/cmd", "/c"],
     "reboot": ["/reboot", "/r"],
-    "alias": ["/alias", "/a", "/unalias", "/ua"]
+    "alias": ["/alias", "/a", "/unalias", "/ua"],
+    "about": ["/about", "/关于"]
 }
 
 const { version } = require('./package.json')
@@ -199,11 +212,16 @@ function alias(event, params, plugin) {
     }
 }
 
+function about(event, params, plugin) {
+    event.reply(about_string)
+}
+
 plugin.onMounted(() => {
     reloadConfig()
     plugin.onCmd(config["reboot"], (event, params) => hooker(event, params, plugin, reboot))
     plugin.onCmd(config["cmd"], (event, params) => hooker(event, params, plugin, runCmd))
     plugin.onCmd(config["alias"], (event, params) => hooker(event, params, plugin, alias))
+    plugin.onCmd(config["about"], (event, params) => hooker(event, params, plugin, about))
     plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, undefined)) //  用于错误信息测试
 })
 
