@@ -1,5 +1,7 @@
 # kivibot-plugin-reboot-tools
 ## 这是<del>重启小助手</del>我进化啦！这将会是一个新人从0到1的见证 (确信 \[至于为什么还叫重启小助手是因为我不会在npm重命名(]
+#### [更新日志](updatelog.md)
+
 
 # 我们能做什么
 * 给kivibot安装上本插件
@@ -23,6 +25,11 @@
 * `/reboot bot/kivi`  ->  重启框架
 * `/cmd`  ->  看查/cmd帮助
 * `/cmd <system-command>`  ->  运行系统命令(此处<...>代表命令, 无需在调用时包含)
+* `/alias`  ->  看查其帮助
+* 使用`/alias <command-a> = <command-b>`定义指令a指向b
+* 使用`/unalias <command-a> <command-b>`取消a指向b
+*(注意: 上述两条指令空格均不能省略, 指令b必须存在, a必须以"/"开头)
+
 
 # Know issues / 已知问题
 * 使用`/cmd`运行长时间交互式界面(如`python`/`ipython`/`node`)不会有返回值, 线程阻塞, 但不影响其他功能, `/cmd`任可正常使用

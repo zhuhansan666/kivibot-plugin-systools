@@ -6,8 +6,19 @@ const iconv = require('iconv-lite');
 const encoding = 'cp936';
 const binaryEncoding = 'binary';
 
+const config = {
+    "cmd": ["/cmd", "/c"],
+    "reboot": ["/reboot", "/r"],
+    "alias": ["/alias", "/a", "/unalias", "/ua"]
+}
+
 const { version } = require('./package.json')
 const plugin = new KiviPlugin('reboot-tools', version)
+
+async function reloadConfig() {
+    plugin.saveConfig(Object.assign(config, plugin.loadConfig()))
+}
+
 
 function isAdmin(event, mainOnly = false) {
     if (mainOnly) {
@@ -98,10 +109,106 @@ function runCmd(event, params, plugin) {
     }
 }
 
+function getElement(arr, item) {
+       for(var i=0; i<arr.length; i++){
+       if(arr[i]==item){
+           return i;
+       }
+   }
+   return -1;
+}
+
+function isAliasCmd(item) {
+    if (config["alias"].includes(item)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function alias_add(event, params, plugin) {
+    secondCmd = params[0]
+    thirdCmd = params[1]
+    fouthCmd = params[2]
+    if (secondCmd != undefined && thirdCmd == "=" && fouthCmd != undefined) {
+        const arr = config[fouthCmd.slice(1, fouthCmd.length)]
+        if (arr != undefined) {
+            if (isAliasCmd(fouthCmd)) {
+                event.reply("〓 ${secondCmd}=>${fouthCmd} 设置失败 〓\n[WARN]本命令不得指向")
+                return
+            }
+            if (secondCmd.indexOf("/") == 0) {
+                if (!arr.includes(secondCmd)) {
+                    arr.push(secondCmd)
+                    event.reply(`〓 ${secondCmd}=>${fouthCmd} 设置成功 〓`)
+                    plugin.saveConfig(config)
+                } else {
+                    event.reply(`〓 ${secondCmd}=>${fouthCmd} 设置成功 〓\n[WARN]${secondCmd} 已指向 ${fouthCmd}`)
+                }
+            } else {
+                event.reply(`〓 ${secondCmd}=>${fouthCmd} 设置失败 〓\n<command-a>(${secondCmd})必须以"/"开头`)
+            }
+        } else {
+            event.reply(`〓 ${secondCmd}=>${fouthCmd} 设置失败 〓\n<command-b>(${fouthCmd})不存在`)
+        }
+    } else {
+        event.reply(`〓 reboot-tools./alias帮助 〓\n使用/alias <command-a> = <command-b>定义指令a指向b\n使用/unalias <command-a> <command-b>取消a指向b\n*(注意: 空格不能省略, 指令b必须存在, a必须以"/"开头)`)
+    }
+}
+
+function alias_rm(event, params, plugin) {
+    secondCmd = params[0]
+    thirdCmd = params[1]
+    if (secondCmd != undefined && thirdCmd != undefined) {
+        let arr = config[thirdCmd.slice(1, thirdCmd.length)]
+        if (arr != undefined) {
+            if (isAliasCmd(thirdCmd)) {
+                event.reply("〓 ${secondCmd}=>${fouthCmd} 设置失败 〓\n[WARN]本命令不得指向")
+                return
+            }
+            if (secondCmd.indexOf("/") == 0) {
+                if (arr.includes(secondCmd)) {
+                    itemIndex = getElement(arr, secondCmd)
+                    arr.splice(itemIndex, 1)
+                    event.reply(`〓 ${secondCmd}=>${thirdCmd} 删除成功 〓`)
+                    plugin.saveConfig(config)
+                } else {
+                    event.reply(`〓 ${secondCmd}=>${thirdCmd} 删除成功 〓\n[WARN]${secondCmd} 未指向 ${thirdCmd}`)
+                }
+            } else {
+                event.reply(`〓 ${secondCmd}=>${thirdCmd} 删除失败 〓\n<command-a>(${secondCmd})必须以"/"开头`)
+            }
+        } else {
+            event.reply(`〓 ${secondCmd}=>${thirdCmd} 删除失败 〓\n<command-b>(${thirdCmd})不存在`)
+        }
+    } else {
+        event.reply(`〓 reboot-tools./ualias帮助 〓\n使用/alias <command-a> = <command-b>定义指令a指向b(注意: 空格不能省略, 指令b必须存在, a必须以"/"开头)\n使用/unalias <command-a> <command-b>取消a指向b`)
+    }
+}
+
+function alias(event, params, plugin) {
+    if (event.raw_message.indexOf("/u") == -1) {
+        console.log("alias_add")
+        alias_add(event, params, plugin)
+    } else {
+        if (event.raw_message.indexOf("/u") == 0) {
+            alias_rm(event, params, plugin)
+        } else {
+            event.reply(`〓 reboot-tools./alias帮助 〓\n使用/alias <command-a> = <command-b>定义指令a指向b(注意: 空格不能省略, 指令b必须存在, a必须以"/"开头)\n使用/unalias <command-a> <command-b>取消a指向b`)
+        }
+    }
+}
+
 plugin.onMounted(() => {
-    plugin.onCmd('/reboot', (event, params) => hooker(event, params, plugin, reboot))
-    plugin.onCmd('/cmd', (event, params) => hooker(event, params, plugin, runCmd))
+    reloadConfig()
+    plugin.onCmd(config["reboot"], (event, params) => hooker(event, params, plugin, reboot))
+    plugin.onCmd(config["cmd"], (event, params) => hooker(event, params, plugin, runCmd))
+    plugin.onCmd(config["alias"], (event, params) => hooker(event, params, plugin, alias))
     // plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, undefined)) //  用于错误信息测试
+})
+
+plugin.onUnmounted(() => {
+    plugin.saveConfig(config)
 })
 
 module.exports = { plugin }
