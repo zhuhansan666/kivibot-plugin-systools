@@ -10,6 +10,11 @@ const about_string = `〓 关于reboot-tools 〓
 感谢您对本插件的支持, 有什么建议和bug可以在Github提出或发送邮件并备注(备注内容详见README文件)
 `
 
+const first_time = `〓 reboot-tools警告 〓
+由于本插件会对系统进行操作(开关机), 使用前请仔细阅读README_md帮助文档, 获取Github连接请输入/about
+否则任何因使用不当造成的后果本人概不负责
+                开发者: 爱喝牛奶の涛哥 20230109`
+
 const os = require("node:os")
 const exec = require('child_process').exec;
 const { KiviPlugin, segment, http } = require('@kivibot/core')
@@ -19,10 +24,13 @@ const encoding = 'cp936';
 const binaryEncoding = 'binary';
 
 const config = {
-    "cmd": ["/cmd", "/c"],
-    "reboot": ["/reboot", "/r"],
-    "alias": ["/alias", "/a", "/unalias", "/ua"],
-    "about": ["/about", "/关于"]
+    "start-at-first-time": true,
+    "commands": {
+        "cmd": ["/cmd", "/c"],
+        "reboot": ["/reboot", "/r"],
+        "alias": ["/alias", "/a", "/unalias", "/ua"],
+        "about": ["/about", "/关于"]
+    }
 }
 
 const { version } = require('./package.json')
@@ -31,7 +39,6 @@ const plugin = new KiviPlugin('reboot-tools', version)
 async function reloadConfig() {
     plugin.saveConfig(Object.assign(config, plugin.loadConfig()))
 }
-
 
 function isAdmin(event, mainOnly = false) {
     if (mainOnly) {
@@ -46,6 +53,7 @@ async function hooker(event, params, plugin, func) {
     /**
      * 本函数用于hook错误, 在发生错误时发送错误信息到qq
      */
+    checkStartAtFirstTime(event, plugin)
     try {
         func(event, params, plugin)
     } catch (error) {
@@ -216,12 +224,20 @@ function about(event, params, plugin) {
     event.reply(about_string)
 }
 
+function checkStartAtFirstTime(event, plugin) {
+    if (config["start-at-first-time"] === true) {
+        event.reply(first_time)
+        config["start-at-first-time"] = false
+        plugin.saveConfig(config)
+    }
+}
+
 plugin.onMounted(() => {
     reloadConfig()
-    plugin.onCmd(config["reboot"], (event, params) => hooker(event, params, plugin, reboot))
-    plugin.onCmd(config["cmd"], (event, params) => hooker(event, params, plugin, runCmd))
-    plugin.onCmd(config["alias"], (event, params) => hooker(event, params, plugin, alias))
-    plugin.onCmd(config["about"], (event, params) => hooker(event, params, plugin, about))
+    plugin.onCmd(config["commands"]["reboot"], (event, params) => hooker(event, params, plugin, reboot))
+    plugin.onCmd(config["commands"]["cmd"], (event, params) => hooker(event, params, plugin, runCmd))
+    plugin.onCmd(config["commands"]["alias"], (event, params) => hooker(event, params, plugin, alias))
+    plugin.onCmd(config["commands"]["about"], (event, params) => hooker(event, params, plugin, about))
     plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, undefined)) //  用于错误信息测试
 })
 
