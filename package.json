@@ -1,6 +1,6 @@
 {
     "name": "kivibot-plugin-systools",
-    "version": "0.2.4",
+    "version": "0.2.3",
     "description": "系统小助手\n这将会是一个新人从0到1的见证",
     "main": "index.js",
     "scripts": {
