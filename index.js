@@ -1,11 +1,11 @@
-const about_string = `〓 关于systools 〓
+const about_string = `〓 关于systool 〓
 本插件由"爱喝牛奶の涛哥"制作, 使用commonjs标准
-本插件完全免费, bug反馈可发送邮件至public.zhuhansan666@outlook.com 备注 systools:bug
+本插件完全免费, bug反馈可发送邮件至public.zhuhansan666@outlook.com 备注 systool:bug
 本插件采用GNU3.0协议, 请自觉遵循
 
 〓 源码 〓
-Github: https://github.com/zhuhansan666/kivibot-plugin-systools
-Gitee: https://gitee.com/zhu-hansan/kivibot-plugin-systools
+Github: https://github.com/zhuhansan666/kivibot-plugin-systool
+Gitee: https://gitee.com/zhu-hansan/kivibot-plugin-systool
 
 〓 联系我 〓
 爱喝牛奶の涛哥@Bilibili: https://space.bilibili.com/687039517
@@ -16,7 +16,7 @@ Gitee: https://gitee.com/zhu-hansan/kivibot-plugin-systools
 感谢您对本插件的支持, 有什么建议和bug可以在Github提出或发送邮件并备注(备注内容详见README文件)
 `
 
-const first_time = `〓 systools警告 〓
+const first_time = `〓 systool警告 〓
 由于本插件会对系统进行操作(开关机), 使用前请仔细阅读README_md帮助文档, 获取Github连接请输入/about
 否则任何因使用不当造成的后果本人概不负责
 \t\t\t\t\t\t\t\t开发者: 爱喝牛奶の涛哥 20230109
@@ -44,7 +44,7 @@ const config = {
 }
 
 const { version } = require('./package.json')
-const plugin = new KiviPlugin('systools', version)
+const plugin = new KiviPlugin('systool', version)
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
@@ -82,7 +82,7 @@ async function hooker(event, params, plugin, func) {
         } catch (err) {
             var funcname = undefined
         }
-        const msg = `〓 糟糕！运行"${funcname}"发生错误, 请您坐和放宽, 下面是详细错误信息(好东西就要莱纳~) 〓\n${error.stack}\n(如有需要请发送邮件至开发者 public.zhuhansan666@outlook.com 备注 systools:bug)`
+        const msg = `〓 糟糕！运行"${funcname}"发生错误, 请您坐和放宽, 下面是详细错误信息(好东西就要莱纳~) 〓\n${error.stack}\n(如有需要请发送邮件至开发者 public.zhuhansan666@outlook.com 备注 systool:bug)`
         event.reply(msg)
     }
 }
@@ -93,7 +93,7 @@ function reboot(event, params, plugin) {
 
     secondCmd = params[0]
     if (secondCmd == "help") {
-        event.reply(`〓 systools./reboot 帮助 〓\n/reboot sys/system  ->  重启系统\n/reboot bot/kivi  ->  重启框架(此指令不稳定, 建议deploy模式下直接/exit重启机器人)`)
+        event.reply(`〓 systool./reboot 帮助 〓\n/reboot sys/system  ->  重启系统\n/reboot bot/kivi  ->  重启框架(此指令不稳定, 建议deploy模式下直接/exit重启机器人)`)
     } else {
         if (isMainAdmin) {
             if (secondCmd == "sys" || secondCmd == "system") {
@@ -133,7 +133,7 @@ function reboot(event, params, plugin) {
 function runCmd(event, params, plugin) {
     secondCmd = params[0]
     if (secondCmd == undefined) {
-        event.reply(`〓 systools./cmd帮助 〓\n使用/cmd <system-command>执行系统命令`)
+        event.reply(`〓 systool./cmd帮助 〓\n使用/cmd <system-command>执行系统命令`)
     } else {
         cmdString = event.raw_message.slice(5, event.raw_message.length)
         if (isAdmin(event, true)) {
@@ -193,7 +193,7 @@ function alias_add(event, params, plugin) {
             event.reply(`〓 ${secondCmd}=>${fouthCmd} 设置失败 〓\n<command-b>(${fouthCmd})不存在`)
         }
     } else {
-        event.reply(`〓 systools./alias帮助 〓\n使用/alias <command-a> = <command-b>定义指令a指向b\n使用/unalias <command-a> <command-b>取消a指向b\n*(注意: 空格不能省略, 指令b必须存在, a必须以"/"开头)`)
+        event.reply(`〓 systool./alias帮助 〓\n使用/alias <command-a> = <command-b>定义指令a指向b\n使用/unalias <command-a> <command-b>取消a指向b\n*(注意: 空格不能省略, 指令b必须存在, a必须以"/"开头)`)
     }
 }
 
@@ -223,7 +223,7 @@ function alias_rm(event, params, plugin) {
             event.reply(`〓 ${secondCmd}=>${thirdCmd} 删除失败 〓\n<command-b>(${thirdCmd})不存在`)
         }
     } else {
-        event.reply(`〓 systools./ualias帮助 〓\n使用/alias <command-a> = <command-b>定义指令a指向b(注意: 空格不能省略, 指令b必须存在, a必须以"/"开头)\n使用/unalias <command-a> <command-b>取消a指向b`)
+        event.reply(`〓 systool./ualias帮助 〓\n使用/alias <command-a> = <command-b>定义指令a指向b(注意: 空格不能省略, 指令b必须存在, a必须以"/"开头)\n使用/unalias <command-a> <command-b>取消a指向b`)
     }
 }
 
@@ -235,7 +235,7 @@ function alias(event, params, plugin) {
         if (event.raw_message.indexOf("/u") == 0) {
             alias_rm(event, params, plugin)
         } else {
-            event.reply(`〓 systools./alias帮助 〓\n使用/alias <command-a> = <command-b>定义指令a指向b(注意: 空格不能省略, 指令b必须存在, a必须以"/"开头)\n使用/unalias <command-a> <command-b>取消a指向b`)
+            event.reply(`〓 systool./alias帮助 〓\n使用/alias <command-a> = <command-b>定义指令a指向b(注意: 空格不能省略, 指令b必须存在, a必须以"/"开头)\n使用/unalias <command-a> <command-b>取消a指向b`)
         }
     }
 }

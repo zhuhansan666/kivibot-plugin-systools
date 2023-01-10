@@ -1,4 +1,4 @@
-# kivibot-plugin-reboot-tools
+# kivibot-plugin-systool
 > 系统小助手
 > 这将会是一个新人从0到1的见证
 > [更新日志](changeLog.md)
@@ -27,11 +27,11 @@
 ## 如何安装
 ### 安装
 ```bash
-npm install kivibot-plugin-reboot-tools
+npm install kivibot-plugin-systool
 ```
 > 或在qq对机器人发送
 ```
-/p add reboot-tools (等价于/plugin add reboot-tools)
+/p add systool (等价于/plugin add systool)
 ```
 
 <!---   For Author
@@ -41,7 +41,7 @@ npm install kivibot-plugin-reboot-tools
 
 ### 启用
 ```
-/p on reboot-tools(等价于/plugin on reboot-tools)
+/p on systool(等价于/plugin on systool)
 ```
 
 
@@ -64,9 +64,9 @@ npm install kivibot-plugin-reboot-tools
 
 ## TODO
 - [x] 暂时不知道做什么
-> 有建议可以发邮件 [public.zhuhansan666@outlook.com](mailto:public.zhuhansan666@outlook.com?subject=reboot-tools:suggest)
+> 有建议可以发邮件 [public.zhuhansan666@outlook.com](mailto:public.zhuhansan666@outlook.com?subject=systool:suggest)
 
 
 ## issue / bug 反馈
-您可以直接在 [我的 Github](https://github.com/zhuhansan666/kivibot-plugin-reboot-tools) 提出issue
-> 但是我不常看 Github , 推荐发送邮件 [public.zhuhansan666@outlook.com](mailto:public.zhuhansan666@outlook.com?subject=reboot-tools:suggest)
+您可以直接在 [我的 Github](https://github.com/zhuhansan666/kivibot-plugin-systool) 提出issue
+> 但是我不常看 Github , 推荐发送邮件 [public.zhuhansan666@outlook.com](mailto:public.zhuhansan666@outlook.com?subject=systool:suggest)
