@@ -20,8 +20,9 @@ const first_time = `〓 reboot-tools警告 〓
 由于本插件会对系统进行操作(开关机), 使用前请仔细阅读README_md帮助文档, 获取Github连接请输入/about
 否则任何因使用不当造成的后果本人概不负责
 \t\t\t\t\t\t\t\t开发者: 爱喝牛奶の涛哥 20230109
-*该信息将在距离插件安装0.5小时后不在提示`
+*该信息将在下次启动kivibot框架时不再提示`
 
+const process = require("node:process")
 const os = require("node:os")
 const exec = require('child_process').exec;
 const { KiviPlugin, segment, http } = require('@kivibot/core')
@@ -31,7 +32,9 @@ const encoding = 'cp936';
 const binaryEncoding = 'binary';
 
 const config = {
-    "start-time": new Date().getTime(),
+    "start-time": true,
+    "latest-start-time": undefined,
+    "latest-exit-time": undefined,
     "commands": {
         "cmd": ["/cmd", "/c"],
         "reboot": ["/reboot", "/r"],
@@ -43,8 +46,18 @@ const config = {
 const { version } = require('./package.json')
 const plugin = new KiviPlugin('reboot-tools', version)
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 async function reloadConfig() {
     plugin.saveConfig(Object.assign(config, plugin.loadConfig()))
+    if (config["start-time"] != false && config["start-time"] != true) {
+        config["start-time"] = true
+        plugin.saveConfig(config)
+    }
+    config["latest-start-time"] = new Date().getTime()
+    plugin.saveConfig(config)
 }
 
 function isAdmin(event, mainOnly = false) {
@@ -232,11 +245,9 @@ function about(event, params, plugin) {
 }
 
 function checkStartAtFirstTime(event, plugin) {
-    if (config["start-time"] != false && new Date().getTime() - config["start-time"] <= 0.5 * 3600 * 1000) {
+    if (config["start-time"] != false) {
         event.reply(first_time)
-    } else {
-        config["start-time"] = false
-        plugin.saveConfig(config)
+        sleep(300)
     }
 }
 
@@ -248,7 +259,12 @@ plugin.onMounted(() => {
     plugin.onCmd(config["commands"]["about"], (event, params) => hooker(event, params, plugin, about))
     plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, (event, params, plugin) => {
         throw Error("错误测试")
-    })) //  用于错误信息测试
+    })) //  用于错误信息测试;
+    process.on('exit', (exitcode) => { 
+        config["start-time"] = false
+        config["latest-exit-time"] = new Date().getTime()
+        plugin.saveConfig(config)
+    })
 })
 
 plugin.onUnmounted(() => {
