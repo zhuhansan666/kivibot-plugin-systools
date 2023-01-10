@@ -19,7 +19,7 @@ Gitee: https://gitee.com/zhu-hansan/kivibot-plugin-systool
 const first_time = `〓 systool警告 〓
 由于本插件会对系统进行操作(开关机), 使用前请仔细阅读README_md帮助文档, 获取Github链接请输入/about
 否则任何因使用不当造成的后果本人概不负责
-\t\t\t\t\t\t\t\tt\t\t\t开发者: 爱喝牛奶の涛哥 20230109
+\t\t\t\t\t\t\t\t\t\t\t\t开发者: 爱喝牛奶の涛哥 20230109
 *该信息将在下次启动kivibot框架时不再提示`
 
 const process = require("node:process")
@@ -139,11 +139,18 @@ function runCmd(event, params, plugin) {
         if (isAdmin(event, true)) {
             event.reply(`〓 开始执行 ${cmdString} 〓`)
             const startTime = new Date().getTime()
-            exec(cmdString, { encoding: binaryEncoding }, function(error, stdout, stderr) {
-                        stdout = iconv.decode(new Buffer.from(stdout, binaryEncoding), encoding)
-                        stderr = iconv.decode(new Buffer.from(stderr, binaryEncoding), encoding)
-                        event.reply(`〓 运行 "${cmdString}" 〓\n${stdout.length > 0 ? `指令输出: ${stdout}` : ""} ${stderr.length > 0 ? `指令输出: ${stderr}` : ""}共耗时${(new Date().getTime() - startTime) / 1000}秒`)
-            });
+            if (os.type() == "Linux" || os.type() == "Darwin") {
+                exec(cmdString, function(error, stdout, stderr) {
+                    event.reply(`〓 运行 "${cmdString}" 〓\n${stdout.length > 0 ? `指令输出: ${stdout}` : ""} ${stderr.length > 0 ? `指令输出(错误信息): ${stderr}` : ""}共耗时${(new Date().getTime() - startTime) / 1000}秒`)
+                });
+                
+            } else {
+                exec(cmdString, { encoding: binaryEncoding }, function(error, stdout, stderr) {
+                    stdout = iconv.decode(new Buffer.from(stdout, binaryEncoding), encoding)
+                    stderr = iconv.decode(new Buffer.from(stderr, binaryEncoding), encoding)
+                    event.reply(`〓 运行 "${cmdString}" 〓\n${stdout.length > 0 ? `指令输出: ${stdout}` : ""} ${stderr.length > 0 ? `指令输出(错误信息): ${stderr}` : ""}共耗时${(new Date().getTime() - startTime) / 1000}秒`)
+                });
+            }
         } else {
             event.reply(`Permission Error: 非主管理员`)
         }
