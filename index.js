@@ -82,7 +82,7 @@ async function hooker(event, params, plugin, func) {
         } catch (err) {
             var funcname = undefined
         }
-        const msg = `〓 糟糕！运行"${funcname}"发生错误, 请您坐和放宽, 下面是详细错误信息 〓\n${error.stack}\n(如有需要请发送邮件至开发者 public.zhuhansan666@outlook.com 备注 reboot-tools:bug)`
+        const msg = `〓 糟糕！运行"${funcname}"发生错误, 请您坐和放宽, 下面是详细错误信息(好东西就要莱纳~) 〓\n${error.stack}\n(如有需要请发送邮件至开发者 public.zhuhansan666@outlook.com 备注 reboot-tools:bug)`
         event.reply(msg)
     }
 }
