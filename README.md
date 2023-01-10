@@ -1,6 +1,6 @@
 # kivibot-plugin-reboot-tools
-> 这是 ~~重启小助手~~ 我进化啦！
-> 这将会是一个萌新从0到1的见证
+> 系统小助手
+> 这将会是一个新人从0到1的见证
 > [更新日志](changeLog.md)
 <!---   For Author
         更新日志中的 “更新” 一般译为 “change”
