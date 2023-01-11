@@ -330,7 +330,7 @@ plugin.onMounted((bot, admins) => {
     plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, (event, params, plugin) => {
         throw Error("错误测试")
     })) //  用于错误信息测试;
-    updateChecker = plugin.cron("* */10 * * * *", (bot, admins) => checkUpdate(bot, admins))
+    updateChecker = plugin.cron("* */30 * * * *", (bot, admins) => checkUpdate(bot, admins))
 
     process.on('exit', (exitcode) => { 
         config["start-time"] = false
