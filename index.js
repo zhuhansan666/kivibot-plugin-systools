@@ -274,6 +274,7 @@ function checkStartAtFirstTime(event, plugin) {
 
 async function checkUpdate(bot, admins) {
     npmUrl = `${npmRoot}kivibot-plugin-${plugin.name}/latest`
+    plugin.logger.info(`Check Update from ${npmUrl}`)
 
     try {
         const { data } = await http.get(npmUrl)
@@ -285,13 +286,13 @@ async function checkUpdate(bot, admins) {
 
     if (!checkVersion(plugin.version, latestVersion)) {
         isLatestVersion = false
-        getAllGroups(bot, (key, value, latestVersion) => {
+        getAllGroups(bot, (key, value) => {
             plugin.bot.sendGroupMsg(key, `〓 systool提示 〓
 systool有新版本拉~
-输入/plugin update systool 以更新至最新版本 (${version} => ${latestVersion})
+输入/plugin update systool 以更新至最新版本 (${version} => ${argvs[0]})
 请不要关闭计算机,好东西就要来啦~ (bushi`)
-            sleep(1500)
-        })
+            sleep(3000)
+        }, [latestVersion, ])
     } else {
         isLatestVersion = true
     }
@@ -313,10 +314,10 @@ function checkVersion(now, latest) {
     return true
 }
 
-function getAllGroups(bot, callback) {
+function getAllGroups(bot, callback, argvs) {
     groups = plugin.bot.gl
     for (let key of groups) {
-        callback(key[0], key[1])
+        callback(key[0], key[1], argvs)
     }
 }
 
