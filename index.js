@@ -50,6 +50,8 @@ const plugin = new KiviPlugin('systool', version)
 
 const npmRoot = "https://registry.npmjs.org/"
 var isLatestVersion = true;
+var latestCheckUpdateTime = -1;
+var latestVersion = "0.0.0"
 
 // function getRndInteger(min, max) {
 //     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -274,25 +276,31 @@ function checkStartAtFirstTime(event, plugin) {
 
 async function checkUpdate(bot, admins) {
     npmUrl = `${npmRoot}kivibot-plugin-${plugin.name}/latest`
-    plugin.logger.info(`Check Update from ${npmUrl}`)
-
+    // plugin.logger.info(`Check Update from ${npmUrl}`)
+    // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `正在从 ${npmUrl} 检查更新 (当前时间: ${new Date().getTime()}, 上次检查更新在: ${latestCheckUpdateTime > -1 ? latestCheckUpdateTime : "本次为打开框架首次检测"})`)
+    latestCheckUpdateTime = new Date().getTime()
+    
     try {
         const { data } = await http.get(npmUrl)
         latestVersion = data.version
+        _latestVersion = latestVersion
+        // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `检查更新成功, 最新版本: ${latestVersion}, 当前版本: ${plugin.version}`)
     } catch(err) {
-        latestVersion = "0.0.0"
-        plugin.error(err)
+        _latestVersion = "0.0.0"
+        // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `检查更新失败: ${err.stack}`)
+        plugin.error(err.stack)
     }
 
-    if (!checkVersion(plugin.version, latestVersion)) {
+    if (!checkVersion(plugin.version, _latestVersion)) {
         isLatestVersion = false
         getAllGroups(bot, (key, value) => {
+            // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `尝试向 ${key} 发送消息, 最新版本: ${latestVersion}`)
             plugin.bot.sendGroupMsg(key, `〓 systool提示 〓
 systool有新版本拉~
-输入/plugin update systool 以更新至最新版本 (${version} => ${argvs[0]})
+输入/plugin update systool 以更新至最新版本 (${plugin.version} => ${latestVersion})
 请不要关闭计算机,好东西就要来啦~ (bushi`)
             sleep(3000)
-        }, [latestVersion, ])
+        })
     } else {
         isLatestVersion = true
     }
@@ -314,10 +322,10 @@ function checkVersion(now, latest) {
     return true
 }
 
-function getAllGroups(bot, callback, argvs) {
+function getAllGroups(bot, callback) {
     groups = plugin.bot.gl
     for (let key of groups) {
-        callback(key[0], key[1], argvs)
+        callback(key[0], key[1])
     }
 }
 
