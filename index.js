@@ -22,10 +22,11 @@ const first_time = `〓 systool警告 〓
 \t\t\t\t\t\t\t\t\t\t\t\t开发者: 爱喝牛奶の涛哥 20230109
 *该信息将在下次启动kivibot框架时不再提示`
 
+// const Math = require("node:Math")
 const process = require("node:process")
 const os = require("node:os")
 const exec = require('child_process').exec;
-const { KiviPlugin, segment, http } = require('@kivibot/core')
+const { KiviPlugin, http } = require('@kivibot/core')
 const { kiviConf } = require("@kivibot/core")
 const iconv = require('iconv-lite');
 const encoding = 'cp936';
@@ -44,10 +45,23 @@ const config = {
 }
 
 const { version } = require('./package.json')
+const { url } = require("node:inspector")
 const plugin = new KiviPlugin('systool', version)
 
+const npmRoot = "https://registry.npmjs.org/"
+var isLatestVersion = true;
+
+// function getRndInteger(min, max) {
+//     return Math.floor(Math.random() * (max - min + 1)) + min;
+// }
+
 function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
+    const start = new Date().getTime()
+    while (true) {
+        if (new Date().getTime() - start > ms) {
+            return
+        }
+    }
 }
 
 async function reloadConfig() {
@@ -82,7 +96,7 @@ async function hooker(event, params, plugin, func) {
         } catch (err) {
             var funcname = undefined
         }
-        const msg = `〓 糟糕！运行"${funcname}"发生错误, 请您坐和放宽, 下面是详细错误信息(好东西就要莱纳~) 〓\n${error.stack}\n(如有需要请发送邮件至开发者 public.zhuhansan666@outlook.com 备注 systool:bug)`
+        const msg = `〓 糟糕！systool运行"${funcname}"发生错误, 请您坐和放宽, 下面是详细错误信息(好东西就要莱纳~) 〓\n${error.stack}\n(如有需要请发送邮件至开发者 public.zhuhansan666@outlook.com 备注 systool:bug)`
         event.reply(msg)
     }
 }
@@ -258,7 +272,55 @@ function checkStartAtFirstTime(event, plugin) {
     }
 }
 
-plugin.onMounted(() => {
+async function checkUpdate(bot, admins) {
+    npmUrl = `${npmRoot}kivibot-plugin-${plugin.name}/latest`
+
+    try {
+        const { data } = await http.get(npmUrl)
+        latestVersion = data.version
+    } catch(err) {
+        latestVersion = "0.0.0"
+        plugin.error(err)
+    }
+
+    if (!checkVersion(plugin.version, latestVersion)) {
+        isLatestVersion = false
+        getAllGroups(bot, (key, value, latestVersion) => {
+            plugin.bot.sendGroupMsg(key, `〓 systool提示 〓
+systool有新版本拉~
+输入/plugin update systool 以更新至最新版本 (${version} => ${latestVersion})
+请不要关闭计算机,好东西就要来啦~ (bushi`)
+            sleep(1500)
+        })
+    } else {
+        isLatestVersion = true
+    }
+}
+
+function checkVersion(now, latest) {
+    /**
+     * @param now -> 当前版本字符串
+     * @param latest -> 最新版本字符串
+     * @returns bool (false -> 当前不是最新版)
+     */
+    nowVersionArr = now.split(".")
+    latestVersionArr = latest.split(".")
+    for (i=0; i < nowVersionArr.length; i++) {
+        if (nowVersionArr[i] < latestVersionArr[i]) {
+            return false
+        }
+    }
+    return true
+}
+
+function getAllGroups(bot, callback) {
+    groups = plugin.bot.gl
+    for (let key of groups) {
+        callback(key[0], key[1])
+    }
+}
+
+plugin.onMounted((bot, admins) => {
     reloadConfig()
     plugin.onCmd(config["commands"]["reboot"], (event, params) => hooker(event, params, plugin, reboot))
     plugin.onCmd(config["commands"]["cmd"], (event, params) => hooker(event, params, plugin, runCmd))
@@ -267,6 +329,8 @@ plugin.onMounted(() => {
     plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, (event, params, plugin) => {
         throw Error("错误测试")
     })) //  用于错误信息测试;
+    updateChecker = plugin.cron("* */10 * * * *", (bot, admins) => checkUpdate(bot, admins))
+
     process.on('exit', (exitcode) => { 
         config["start-time"] = false
         config["latest-exit-time"] = new Date().getTime()
