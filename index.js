@@ -52,8 +52,8 @@ const { url } = require("node:inspector")
 const plugin = new KiviPlugin('systool', version)
 
 const npmRoot = "https://registry.npmjs.org/"
-var isLatestVersion = true;
-var latestCheckUpdateTime = -1;
+    // var isLatestVersion = true;
+    // var latestCheckUpdateTime = -1;
 var latestVersion = "0.0.0"
 
 // function getRndInteger(min, max) {
@@ -301,14 +301,19 @@ async function checkUpdate(bot, admins) {
 
     if (!checkVersion(plugin.version, _latestVersion)) {
         isLatestVersion = false
-        getAllGroups(bot, (key, value) => {
-            // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `尝试向 ${key} 发送消息, 最新版本: ${latestVersion}`)
-            plugin.bot.sendGroupMsg(key, `〓 systool提示 〓
-systool有新版本拉~
-输入/plugin update systool 以更新至最新版本 (${plugin.version} => ${latestVersion})
-请不要关闭计算机,好东西就要来啦~ (bushi`)
+        update_msg = `〓 systool提示 〓
+        systool有新版本拉~
+        输入/plugin update systool 以更新至最新版本 (${plugin.version} => ${latestVersion})
+        请不要关闭计算机,好东西就要来啦~ (bushi`
+        // getAllGroups(bot, (key, value) => {
+        //     // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `尝试向 ${key} 发送消息, 最新版本: ${latestVersion}`)
+        //     plugin.bot.sendGroupMsg(key, update_msg)
+        //     sleep(3000)
+        // })
+        for (admin in plugin.admins) {
+            plugin.bot.sendPrivateMsg(admin, update_msg)
             sleep(3000)
-        })
+        }
     } else {
         isLatestVersion = true
     }
@@ -330,12 +335,12 @@ function checkVersion(now, latest) {
     return true
 }
 
-function getAllGroups(bot, callback) {
-    groups = plugin.bot.gl
-    for (let key of groups) {
-        callback(key[0], key[1])
-    }
-}
+// function getAllGroups(bot, callback) {
+//     groups = plugin.bot.gl
+//     for (let key of groups) {
+//         callback(key[0], key[1])
+//     }
+// }
 
 async function ip(event, param, plugin) {
     if (isAdmin(event, false)) {
