@@ -310,7 +310,7 @@ async function checkUpdate(bot, admins) {
         //     plugin.bot.sendGroupMsg(key, update_msg)
         //     sleep(3000)
         // })
-        for (admin in plugin.admins) {
+        for (admin of plugin.admins) {
             plugin.bot.sendPrivateMsg(admin, update_msg)
             sleep(3000)
         }
@@ -367,7 +367,6 @@ plugin.onMounted((bot, admins) => {
         throw Error("错误测试")
     })) //  用于错误信息测试;
     updateChecker = plugin.cron('*/30 * * * *', (bot, admins) => checkUpdate(bot, admins))
-
     process.on('exit', (exitcode) => { 
         config["start-time"] = false
         config["latest-exit-time"] = new Date().getTime()
