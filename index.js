@@ -344,9 +344,11 @@ function checkVersion(now, latest) {
 
 async function ip(event, param, plugin) {
     if (isAdmin(event, false)) {
+        event.reply(`〓 systool提示 〓
+正在获取ip, 请稍后...`)
         startTime = new Date().getTime()
         const { data } = await http.get("http://ip.tool.lu")
-        event.reply(`${data.split("\n")[0]}\n请求耗时${(new Date().getTime() - startTime / 1000)}秒`)
+        event.reply(`〓 systool返回 〓${data.split("\n")[0]}\n请求耗时${(new Date().getTime() - startTime) / 1000}秒`)
     } else {
         event.reply(`Permission Error: 非管理员`)
     }
