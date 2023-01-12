@@ -47,16 +47,17 @@ npm install kivibot-plugin-systool
 
 ## 如何使用
 * 看查帮助  ->  `/reboot help`
-* 重启系统  ->  `/reboot sys` 或 `system`
-* 重启框架  ->  `/reboot bot` 或 `kivi`
+* 重启系统  ->  `/reboot sys` 或 `system`  *主管理员命令*
+* 重启框架  ->  `/reboot bot` 或 `kivi`  *主管理员命令*
 * 看查帮助  ->  `/cmd`
-* 运行命令  ->  `/cmd <system-command>`
+* 运行系统命令  ->  `/cmd <system-command>`  *主管理员命令*
 * 看查帮助  ->  `/alias`
 * 使用  ->  `/alias <command-a> = <command-b>`  ->  定义指令a指向b
 * 使用  ->  `/unalias <command-a> <command-b>`  ->  取消a指向b
     > WARN
     > <br>
     >上述两条指令空格均不能省略, 指令b必须存在, a必须以"/"开头
+* 获取公网ip  ->  `/ip`  *管理员命令*
 
 
 ## Know issues / 已知问题

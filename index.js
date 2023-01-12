@@ -40,9 +40,12 @@ const config = {
         "cmd": ["/cmd", "/c"],
         "reboot": ["/reboot", "/r"],
         "alias": ["/alias", "/a", "/unalias", "/ua"],
+        "ip": ["/ip"],
         "about": ["/about", "/关于"]
     }
 }
+
+const defaultConfig = JSON.parse(JSON.stringify(config)) //  deepCopy, 避免config读取复写影响defaultConfig
 
 const { version } = require('./package.json')
 const { url } = require("node:inspector")
@@ -73,6 +76,11 @@ async function reloadConfig() {
         plugin.saveConfig(config)
     }
     config["latest-start-time"] = new Date().getTime()
+    for (let key of Object.keys(defaultConfig["commands"])) {
+        if (config["commands"][key] == undefined) {
+            config["commands"][key] = defaultConfig["commands"][key]
+        }
+    }
     plugin.saveConfig(config)
 }
 
@@ -329,12 +337,23 @@ function getAllGroups(bot, callback) {
     }
 }
 
+async function ip(event, param, plugin) {
+    if (isAdmin(event, false)) {
+        startTime = new Date().getTime()
+        const { data } = await http.get("http://ip.tool.lu")
+        event.reply(`${data.split("\n")[0]}\n请求耗时${(new Date().getTime() - startTime / 1000)}秒`)
+    } else {
+        event.reply(`Permission Error: 非管理员`)
+    }
+}
+
 plugin.onMounted((bot, admins) => {
     reloadConfig()
     plugin.onCmd(config["commands"]["reboot"], (event, params) => hooker(event, params, plugin, reboot))
     plugin.onCmd(config["commands"]["cmd"], (event, params) => hooker(event, params, plugin, runCmd))
     plugin.onCmd(config["commands"]["alias"], (event, params) => hooker(event, params, plugin, alias))
     plugin.onCmd(config["commands"]["about"], (event, params) => hooker(event, params, plugin, about))
+    plugin.onCmd(config["commands"]["ip"], (event, params) => hooker(event, params, plugin, ip))
     plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, (event, params, plugin) => {
         throw Error("错误测试")
     })) //  用于错误信息测试;
