@@ -41,7 +41,7 @@ const config = {
         "reboot": ["/reboot", "/r"],
         "alias": ["/alias", "/a", "/unalias", "/ua"],
         "ip": ["/ip"],
-        "about": ["/about", "/关于"]
+        "about": ["/关于", "/sys", "/systool"]
     }
 }
 
@@ -341,13 +341,13 @@ function checkVersion(now, latest) {
 //     }
 // }
 
-async function ip(event, param, plugin) {
+async function ip(event, params, plugin) {
     if (isAdmin(event, false)) {
         event.reply(`〓 systool提示 〓
 正在获取ip, 请稍后...`)
         startTime = new Date().getTime()
         const { data } = await http.get("http://ip.tool.lu")
-        if (param.includes('-p')) {
+        if (event.raw_message.search("-p") != -1) {
             ipMsg = data
         } else {
             ipMsg = data.split("\n")[0]
@@ -370,7 +370,7 @@ plugin.onMounted((bot, admins) => {
     plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, (event, params, plugin) => {
         throw Error("错误测试")
     })) //  用于错误信息测试;
-    updateChecker = plugin.cron('*/30 * * * *', (bot, admins) => checkUpdate(bot, admins))
+    updateChecker = plugin.cron('*/15 * * * *', (bot, admins) => checkUpdate(bot, admins))
     process.on('exit', (exitcode) => { 
         config["start-time"] = false
         config["latest-exit-time"] = new Date().getTime()
