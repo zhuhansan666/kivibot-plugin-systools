@@ -1,6 +1,6 @@
 # kivibot-plugin-systool
 > 系统小助手
-> 这将会是一个新人从0到1的见证
+> 这将会是一个萌新从不会到会的见证
 > [更新日志](changeLog.md)
 <!---   For Author
         更新日志中的 “更新” 一般译为 “change”
@@ -58,6 +58,7 @@ npm install kivibot-plugin-systool
     > <br>
     >上述两条指令空格均不能省略, 指令b必须存在, a必须以"/"开头
 * 获取公网ip  ->  `/ip`  *管理员命令*
+* 获取公网ip(包含归属地)  ->  `/ip -p`  *管理员命令*
 
 
 ## Know issues / 已知问题

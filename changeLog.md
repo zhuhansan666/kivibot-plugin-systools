@@ -181,6 +181,9 @@
 ApiRejection { code: 1, message: 'unknown' }  
 ```
 
+## V0.5.5 | 2023-01-13 18:11:27
+* 更新获取公网ip(包含归属地)  ->  `/ip -p`
+
 ---
 ## index
 [TOC]

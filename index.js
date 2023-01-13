@@ -48,7 +48,7 @@ const config = {
 const defaultConfig = JSON.parse(JSON.stringify(config)) //  deepCopy, 避免config读取复写影响defaultConfig
 
 const { version } = require('./package.json')
-const { url } = require("node:inspector")
+    // const { url } = require("node:inspector")
 const plugin = new KiviPlugin('systool', version)
 
 const npmRoot = "https://registry.npmjs.org/"
@@ -90,7 +90,6 @@ function isAdmin(event, mainOnly = false) {
     } else {
         return plugin.admins.includes(event.sender.user_id);
     }
-
 }
 
 async function hooker(event, params, plugin, func) {
@@ -296,7 +295,7 @@ async function checkUpdate(bot, admins) {
     } catch(err) {
         _latestVersion = "0.0.0"
         // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `检查更新失败: ${err.stack}`)
-        plugin.error(err.stack)
+        plugin.throwPluginError(err.stack)
     }
 
     if (!checkVersion(plugin.version, _latestVersion)) {
@@ -348,8 +347,13 @@ async function ip(event, param, plugin) {
 正在获取ip, 请稍后...`)
         startTime = new Date().getTime()
         const { data } = await http.get("http://ip.tool.lu")
+        if (param.includes('-p')) {
+            ipMsg = data
+        } else {
+            ipMsg = data.split("\n")[0]
+        }
         event.reply(`〓 systool返回 〓
-${data.split("\n")[0]}
+${ipMsg}
 请求耗时${(new Date().getTime() - startTime) / 1000}秒`)
     } else {
         event.reply(`Permission Error: 非管理员`)
