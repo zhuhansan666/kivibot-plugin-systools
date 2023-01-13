@@ -348,7 +348,7 @@ async function ip(event, params, plugin) {
         startTime = new Date().getTime()
         const { data } = await http.get("http://ip.tool.lu")
         if (event.raw_message.search("-p") != -1) {
-            ipMsg = data
+            ipMsg = `${data.split("\n")[0]}\n${data.split("\n")[1]}`
         } else {
             ipMsg = data.split("\n")[0]
         }

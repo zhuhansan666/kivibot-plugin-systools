@@ -188,6 +188,9 @@ ApiRejection { code: 1, message: 'unknown' }
 * 修复`/ip`中`-p`无法识别的问题
 * 更新并优化`/about`触发词
 
+## V0.5.7 | 
+* 修复`/ip -p`换行过多的问题
+
 ---
 ## index
 [TOC]
