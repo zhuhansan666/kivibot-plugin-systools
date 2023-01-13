@@ -55,6 +55,7 @@ const npmRoot = "https://registry.npmjs.org/"
     // var isLatestVersion = true;
     // var latestCheckUpdateTime = -1;
 var latestVersion = "0.0.0"
+var checkVersionEnable = true
 
 // function getRndInteger(min, max) {
 //     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -136,12 +137,12 @@ function reboot(event, params, plugin) {
             } else {
                 if (secondCmd == "bot" || secondCmd == "kivi") {
                     // event.reply(`暂不支持`)
-                    event.reply(`〓 开始运行 "kivi deploy -f" 〓`)
+                    event.reply(`〓 开始运行 "/exit" 〓`)
                     const startTime = new Date().getTime()
-                    exec("kivi deploy -f", function(error, stdout, stderr) {
-                        event.reply(`〓 运行 "kivi deploy -f" 〓\n${stdout.length > 0 ? `指令输出: ${stdout}` : ""} ${stderr.length > 0 ? `指令输出: ${stderr}` : ""}共耗时${(new Date().getTime() - startTime) / 1000}秒`)
-                        process.exit()
-                    });
+                    // exec("kivi deploy -f", function(error, stdout, stderr) {
+                        // event.reply(`〓 运行 "kivi deploy -f" 〓\n${stdout.length > 0 ? `指令输出: ${stdout}` : ""} ${stderr.length > 0 ? `指令输出: ${stderr}` : ""}共耗时${(new Date().getTime() - startTime) / 1000}秒`)
+                    process.exit()
+                    // });
                 } else {
                     event.reply(`未知的参数: "${secondCmd}", 输入 "/reboot help" 以获取帮助`)
                 }
@@ -286,35 +287,40 @@ async function checkUpdate(bot, admins) {
     // plugin.logger.info(`Check Update from ${npmUrl}`)
     // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `正在从 ${npmUrl} 检查更新 (当前时间: ${new Date().getTime()}, 上次检查更新在: ${latestCheckUpdateTime > -1 ? latestCheckUpdateTime : "本次为打开框架首次检测"})`)
     latestCheckUpdateTime = new Date().getTime()
-    
-    try {
-        const { data } = await http.get(npmUrl)
-        latestVersion = data.version
-        _latestVersion = latestVersion
-        // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `检查更新成功, 最新版本: ${latestVersion}, 当前版本: ${plugin.version}`)
-    } catch(err) {
-        _latestVersion = "0.0.0"
-        // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `检查更新失败: ${err.stack}`)
-        plugin.throwPluginError(err.stack)
-    }
 
-    if (!checkVersion(plugin.version, _latestVersion)) {
-        isLatestVersion = false
-        update_msg = `〓 systool提示 〓
-        systool有新版本拉~
-        输入/plugin update systool 以更新至最新版本 (${plugin.version} => ${latestVersion})
-        请不要关闭计算机,好东西就要来啦~ (bushi`
-        // getAllGroups(bot, (key, value) => {
-        //     // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `尝试向 ${key} 发送消息, 最新版本: ${latestVersion}`)
-        //     plugin.bot.sendGroupMsg(key, update_msg)
-        //     sleep(3000)
-        // })
-        for (admin of plugin.admins) {
-            plugin.bot.sendPrivateMsg(admin, update_msg)
-            sleep(3000)
+    if (checkVersionEnable) {
+        try {
+            const { data } = await http.get(npmUrl)
+            latestVersion = data.version
+            _latestVersion = latestVersion
+            // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `检查更新成功, 最新版本: ${latestVersion}, 当前版本: ${plugin.version}`)
+        } catch(err) {
+            _latestVersion = "0.0.0"
+            // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `检查更新失败: ${err.stack}`)
+            plugin.throwPluginError(err.stack)
         }
-    } else {
-        isLatestVersion = true
+
+        if (!checkVersion(plugin.version, _latestVersion)) {
+            isLatestVersion = false
+            update_msg = `〓 systool提示 〓
+            systool有新版本拉~
+            输入/plugin update systool 以更新至最新版本 (${plugin.version} => ${latestVersion})
+            请不要关闭计算机,好东西就要来啦~ (bushi`
+            // getAllGroups(bot, (key, value) => {
+            //     // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `尝试向 ${key} 发送消息, 最新版本: ${latestVersion}`)
+            //     plugin.bot.sendGroupMsg(key, update_msg)
+            //     sleep(3000)
+            // })
+            checkVersionEnable = false
+            for (admin of plugin.admins) {
+                plugin.bot.sendPrivateMsg(admin, update_msg)
+                sleep(970)
+            }
+        } else {
+            isLatestVersion = true
+        }
+    } else if (new Date().getTime() - latestCheckUpdateTime >= 21600) {
+        checkVersionEnable = true
     }
 }
 
@@ -370,7 +376,7 @@ plugin.onMounted((bot, admins) => {
     plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, (event, params, plugin) => {
         throw Error("错误测试")
     })) //  用于错误信息测试;
-    updateChecker = plugin.cron('*/15 * * * *', (bot, admins) => checkUpdate(bot, admins))
+    updateChecker = plugin.cron('*/1 * * * *', (bot, admins) => checkUpdate(bot, admins))
     process.on('exit', (exitcode) => { 
         config["start-time"] = false
         config["latest-exit-time"] = new Date().getTime()
