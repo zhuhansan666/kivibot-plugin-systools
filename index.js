@@ -24,6 +24,7 @@ const first_time = `〓 systool警告 〓
 
 // const Math = require("node:Math")
 const process = require("node:process")
+const date = require('date-and-time')
 const os = require("node:os")
 const exec = require('child_process').exec;
 const { KiviPlugin, http } = require('@kivibot/core')
@@ -36,6 +37,33 @@ const config = {
     "start-time": true,
     "latest-start-time": undefined,
     "latest-exit-time": undefined,
+    "using-count": {
+        0: 0,
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 0,
+        10: 0,
+        11: 0,
+        12: 0,
+        13: 0,
+        14: 0,
+        15: 0,
+        16: 0,
+        17: 0,
+        18: 0,
+        19: 0,
+        20: 0,
+        21: 0,
+        22: 0,
+        23: 0,
+        "period": [-1, -1]
+    },
     "commands": {
         "cmd": ["/cmd", "/c"],
         "reboot": ["/reboot", "/r"],
@@ -97,6 +125,7 @@ async function hooker(event, params, plugin, func) {
     /**
      * 本函数用于hook错误, 在发生错误时发送错误信息到qq
      */
+    config["using-count"][new Date().getHours()] += 1 // 使用计数
     checkStartAtFirstTime(event, plugin)
     try {
         func(event, params, plugin)
@@ -282,6 +311,50 @@ function checkStartAtFirstTime(event, plugin) {
     }
 }
 
+function min(arr) {
+    _result = undefined
+    for (item of arr) {
+        if (_result == undefined || _result > item) {
+            _result = item
+        }
+    }
+    return _result
+}
+
+function max(arr) {
+    _result = undefined
+    for (item of arr) {
+        if (_result == undefined || _result < item) {
+            _result = item
+        }
+    }
+    return _result
+}
+
+
+function getLatestUsing(maxNum = false) {
+    /**
+     * 获取最少使用的时间(段)
+     * @param maxNum 视为使用较少最大值 (number -> <= 此时间 / false -> 忽略)
+     */
+    result = []
+    usingJson = config["using-count"]
+    for (key of Object.keys(usingJson)) {
+        key = Number(key)
+        if (result.length <= 0 || usingJson[key] < result[0]) {
+            result = []
+            result.push(key)
+        } else if (result.length > 0 && usingJson[key] == result[0]) {
+            result.push(key)
+        }
+    }
+    if (maxNum === false || usingJson[result[0]] <= maxNum) {
+        return [min(result), max(result)]
+    } else {
+        return [-1, -1]  // 超过可接受最大值
+    }
+}
+
 async function checkUpdate(bot, admins) {
     npmUrl = `${npmRoot}kivibot-plugin-${plugin.name}/latest`
     // plugin.logger.info(`Check Update from ${npmUrl}`)
@@ -302,25 +375,47 @@ async function checkUpdate(bot, admins) {
 
         if (!checkVersion(plugin.version, _latestVersion)) {
             isLatestVersion = false
-            update_msg = `〓 systool提示 〓
-            systool有新版本拉~
-            输入/plugin update systool 以更新至最新版本 (${plugin.version} => ${latestVersion})
-            请不要关闭计算机,好东西就要来啦~ (bushi`
-            // getAllGroups(bot, (key, value) => {
-            //     // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `尝试向 ${key} 发送消息, 最新版本: ${latestVersion}`)
-            //     plugin.bot.sendGroupMsg(key, update_msg)
-            //     sleep(3000)
-            // })
-            checkVersionEnable = false
-            for (admin of plugin.admins) {
-                plugin.bot.sendPrivateMsg(admin, update_msg)
-                sleep(970)
+            config["using-count"]["period"] = getLatestUsing()
+            timePeriod = config["using-count"]["period"]
+            d = new Date()
+            hour = d.getHours()
+            if (timePeriod[0] >= hour && timePeriod[1] <= hour) {
+                exec(`npm install kivibot-plugin-systool`, function(error, stdout, stderr) {
+                    if (stdout) {
+                        plugin.logger.debug(stdout)
+                    }
+                    if (error) {
+                        plugin.logger.error(error)
+                    }
+                    if (stderr ) {
+                        plugin.logger.warn(stderr)
+                    }
+                })
+                update_msg = `〓 systool提示 〓
+                检测到您 ${timePeriod[0]}点到${timePeriod[1]}点 使用本插件次数较少, 已在 ${date.format(d,'YYYY/MM/DD HH:mm:ss')} 为您自动更新
+                systool已更新至最新版本  (${plugin.version} => ${latestVersion})
+                输入/plugin reload systool 以应用更新 
+                请不要关闭计算机,好东西就要来啦~ (bushi`
+                // update_msg = `〓 systool提示 〓
+                // systool有新版本拉~
+                // 输入/plugin update systool 以更新至最新版本 (${plugin.version} => ${latestVersion})
+                // 请不要关闭计算机,好东西就要来啦~ (bushi`
+                // getAllGroups(bot, (key, value) => {
+                //     // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `尝试向 ${key} 发送消息, 最新版本: ${latestVersion}`)
+                //     plugin.bot.sendGroupMsg(key, update_msg)
+                //     sleep(3000)
+                // })
+                // checkVersionEnable = false
+                for (admin of plugin.admins) {
+                    plugin.bot.sendPrivateMsg(admin, update_msg)
+                    sleep(500)
+                }
             }
         } else {
             isLatestVersion = true
         }
-    } else if (new Date().getTime() - latestCheckUpdateTime >= 21600) {
-        checkVersionEnable = true
+    // } else if (new Date().getTime() - latestCheckUpdateTime >= 21600) {
+    //     checkVersionEnable = true
     }
 }
 
@@ -385,7 +480,7 @@ plugin.onMounted((bot, admins) => {
 })
 
 plugin.onUnmounted(() => {
-    plugin.saveConfig(config)
+    plugin.saveConfig(Object.assign(config, plugin.loadConfig()))
 })
 
 module.exports = { plugin }

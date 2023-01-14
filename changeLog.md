@@ -195,6 +195,9 @@ ApiRejection { code: 1, message: 'unknown' }
 * 修复检查更新消息重复发送的问题
 * 修复`/reboot bot`/`/reboot kivi`重复打开多个机器人的问题
 
+## V0.6.1 | 2023-01-14 12:28:58
+* 新增自动更新
+
 ---
 ## index
 [TOC]
