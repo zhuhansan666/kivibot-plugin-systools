@@ -1,6 +1,6 @@
 {
     "name": "kivibot-plugin-systool",
-    "version": "0.6.4",
+    "version": "0.6.5",
     "description": "系统小助手\n这将会是一个萌新从不会到会的见证",
     "main": "index.js",
     "scripts": {
@@ -19,6 +19,6 @@
         "url": "https://github.com/zhuhansan666/kivibot-plugin-systools.git"
     },
     "dependencies": {
-        "date-and-time": "2.4.2"
+        "date-and-time": "^2.4.2"
     }
 }
