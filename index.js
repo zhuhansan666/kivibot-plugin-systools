@@ -203,7 +203,7 @@ function runCmd(event, params, plugin) {
     if (secondCmd == undefined) {
         event.reply(`〓 systool./cmd帮助 〓\n使用/cmd <system-command>执行系统命令`)
     } else {
-        cmdString = event.raw_message.slice(5, event.raw_message.length)
+        cmdString = event.raw_message.split(" ", 2)[1]
         if (isAdmin(event, true)) {
             event.reply(`〓 开始执行 ${cmdString} 〓`)
             const startTime = new Date().getTime()
@@ -395,6 +395,7 @@ async function checkUpdate(bot, admins) {
             d = new Date()
             hour = d.getHours()
             if (timePeriod[0] >= hour && timePeriod[1] <= hour) {
+                plugin.bot.sendPrivateMsg(plugin.mainAdmin, `〓 systool提示 〓\n尝试更新: (${plugin.version} => ${latestVersion})`)
                 exec(`npm install kivibot-plugin-${plugin.name} --save`, function(error, stdout, stderr) {
                     if (stdout) {
                         plugin.logger.debug(stdout)
