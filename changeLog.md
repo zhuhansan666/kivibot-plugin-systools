@@ -210,6 +210,9 @@ ApiRejection { code: 1, message: 'unknown' }
 ## V0.6.5 | 2023-01-14 13:12:46
 * 最后一次修复(~~或许吧~~`date-and-time`包缺失的问题 
 
+## V0.6.6 | 2023-01-14 13:29:44
+* 修复安装包没有`--save`的问题
+
 ---
 ## index
 [TOC]

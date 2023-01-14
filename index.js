@@ -31,7 +31,7 @@ const { kiviConf } = require("@kivibot/core")
 try {
     const date = require('date-and-time')
 } catch (error) {
-    exec(`npm install date-and-time`, function(error, stdout, stderr) {
+    exec(`npm install date-and-time --save`, function(error, stdout, stderr) {
         if (stdout) {
             plugin.logger.debug(stdout)
         }
@@ -395,7 +395,7 @@ async function checkUpdate(bot, admins) {
             d = new Date()
             hour = d.getHours()
             if (timePeriod[0] >= hour && timePeriod[1] <= hour) {
-                exec(`npm install kivibot-plugin-systool`, function(error, stdout, stderr) {
+                exec(`npm install kivibot-plugin-${plugin.name} --save`, function(error, stdout, stderr) {
                     if (stdout) {
                         plugin.logger.debug(stdout)
                     }
