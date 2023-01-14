@@ -392,7 +392,7 @@ async function checkUpdate(bot, admins) {
                     }
                 })
                 update_msg = `〓 systool提示 〓
-                检测到您 ${timePeriod[0]}点到${timePeriod[1]}点 使用本插件次数较少, 已在 ${date.format(d,'YYYY/MM/DD HH:mm:ss')} 为您自动更新
+                检测到您 ${timePeriod[0]}点到${timePeriod[1]}点 使用本插件次数较少, 已在 ${date.format(d,'YYYY-MM-DD HH:mm:ss')} 为您自动更新
                 systool已更新至最新版本  (${plugin.version} => ${latestVersion})
                 输入/plugin reload systool 以应用更新 
                 请不要关闭计算机,好东西就要来啦~ (bushi`
