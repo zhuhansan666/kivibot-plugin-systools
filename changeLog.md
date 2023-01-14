@@ -201,6 +201,10 @@ ApiRejection { code: 1, message: 'unknown' }
 ## V0.6.2 | 2023-01-14 12:49:14
 * 修复`date-and-time`包缺失的问题
 
+## V0.6.3 | 2023-01-14 12:56:09
+* 再次修复`date-and-time`包缺失的问题
+
+
 ---
 ## index
 [TOC]

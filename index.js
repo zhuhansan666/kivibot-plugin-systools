@@ -24,11 +24,26 @@ const first_time = `〓 systool警告 〓
 
 // const Math = require("node:Math")
 const process = require("node:process")
-const date = require('date-and-time')
 const os = require("node:os")
 const exec = require('child_process').exec;
 const { KiviPlugin, http } = require('@kivibot/core')
 const { kiviConf } = require("@kivibot/core")
+try {
+    const date = require('date-and-time')
+} catch (error) {
+    exec(`npm install date-and-time`, function(error, stdout, stderr) {
+        if (stdout) {
+            plugin.logger.debug(stdout)
+        }
+        if (error) {
+            plugin.logger.error(error)
+        }
+        if (stderr) {
+            plugin.logger.warn(stderr)
+        }
+    })
+}
+const date = require('date-and-time')
 const iconv = require('iconv-lite');
 const encoding = 'cp936';
 const binaryEncoding = 'binary';
