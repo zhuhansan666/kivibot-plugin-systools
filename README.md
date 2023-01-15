@@ -65,7 +65,9 @@ npm install kivibot-plugin-systool
 * 使用 `/cmd` 运行长时间交互式界面不会有返回值, 线程阻塞, 但不影响其他功能, `/cmd` 任可正常使用
 
 ## TODO
-- [x] 暂时不知道做什么
+<!-- - [x] 暂时不知道做什么 -->
+- [ ] 制作权限组
+- [ ] 动态加载配置文件
 > 有建议可以发邮件 [public.zhuhansan666@outlook.com](mailto:public.zhuhansan666@outlook.com?subject=systool:suggest)
 
 
