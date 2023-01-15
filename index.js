@@ -177,7 +177,7 @@ function runCmd(event, params, plugin) {
         event.reply(`〓 systool./cmd帮助 〓\n使用/cmd <system-command>执行系统命令`)
     } else {
         command = event.raw_message.split(" ", 1)[0]
-        cmdString = event.raw_message.slice(command.length - 1, event.raw_message.length - 1)
+        cmdString = event.raw_message.slice(command.length + 1, event.raw_message.length)
         if (isAdmin(event, true)) {
             event.reply(`〓 开始执行 ${cmdString} 〓`)
             const startTime = new Date().getTime()
