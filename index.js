@@ -52,33 +52,6 @@ const config = {
     "start-time": true,
     "latest-start-time": undefined,
     "latest-exit-time": undefined,
-    "using-count": {
-        0: 0,
-        1: 0,
-        2: 0,
-        3: 0,
-        4: 0,
-        5: 0,
-        6: 0,
-        7: 0,
-        8: 0,
-        9: 0,
-        10: 0,
-        11: 0,
-        12: 0,
-        13: 0,
-        14: 0,
-        15: 0,
-        16: 0,
-        17: 0,
-        18: 0,
-        19: 0,
-        20: 0,
-        21: 0,
-        22: 0,
-        23: 0,
-        "period": [-1, -1]
-    },
     "commands": {
         "cmd": ["/cmd", "/c"],
         "reboot": ["/reboot", "/r"],
@@ -140,7 +113,7 @@ async function hooker(event, params, plugin, func) {
     /**
      * 本函数用于hook错误, 在发生错误时发送错误信息到qq
      */
-    config["using-count"][new Date().getHours()] += 1 // 使用计数
+    // config["using-count"][new Date().getHours()] += 1 // 使用计数
     checkStartAtFirstTime(event, plugin)
     try {
         func(event, params, plugin)
@@ -204,7 +177,7 @@ function runCmd(event, params, plugin) {
         event.reply(`〓 systool./cmd帮助 〓\n使用/cmd <system-command>执行系统命令`)
     } else {
         command = event.raw_message.split(" ", 1)[0]
-        cmdString = event.raw_message.slice(command.length - 1, event.raw_message.length - command.length - 2)
+        cmdString = event.raw_message.slice(command.length - 1, event.raw_message.length - 1)
         if (isAdmin(event, true)) {
             event.reply(`〓 开始执行 ${cmdString} 〓`)
             const startTime = new Date().getTime()
@@ -391,13 +364,14 @@ async function checkUpdate(bot, admins) {
 
         if (!checkVersion(plugin.version, _latestVersion)) {
             isLatestVersion = false
-            config["using-count"]["period"] = getLatestUsing()
-            timePeriod = config["using-count"]["period"]
-            d = new Date()
-            hour = d.getHours()
-            if (timePeriod[0] >= hour && timePeriod[1] <= hour) {
+            // config["using-count"]["period"] = getLatestUsing()
+            // timePeriod = config["using-count"]["period"]
+            // d = new Date()
+            // hour = d.getHours()
+            // if (timePeriod[0] >= hour && timePeriod[1] <= hour) {
+            if (true) {
                 plugin.bot.sendPrivateMsg(plugin.mainAdmin, `〓 systool提示 〓\n尝试更新: (${plugin.version} => ${latestVersion})`)
-                exec(`npm install kivibot-plugin-${plugin.name} --save`, function(error, stdout, stderr) {
+                exec(`npm install kivibot-plugin-${plugin.name}@${latestVersion} --save`, function(error, stdout, stderr) {
                     if (stdout) {
                         plugin.logger.debug(stdout)
                     }
