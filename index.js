@@ -366,10 +366,10 @@ async function checkUpdate(bot, admins) {
             isLatestVersion = false
             // config["using-count"]["period"] = getLatestUsing()
             // timePeriod = config["using-count"]["period"]
-            // d = new Date()
             // hour = d.getHours()
             // if (timePeriod[0] >= hour && timePeriod[1] <= hour) {
             if (true) {
+                d = new Date()
                 plugin.bot.sendPrivateMsg(plugin.mainAdmin, `〓 systool提示 〓\n尝试更新: (${plugin.version} => ${latestVersion})`)
                 exec(`npm install kivibot-plugin-${plugin.name}@${latestVersion} --save`, function(error, stdout, stderr) {
                     if (stdout) {
@@ -377,31 +377,32 @@ async function checkUpdate(bot, admins) {
                     }
                     if (error) {
                         plugin.logger.error(error)
+                        plugin.bot.sendPrivateMsg(plugin.mainAdmin, `〓 systool提示 〓\n[${date.format(d,'YYYY-MM-DD HH:mm:ss')}]尝试更新 (${plugin.version} => ${latestVersion}) 时出错:\n${error.stack}`)
                     }
                     if (stderr ) {
                         plugin.logger.warn(stderr)
+                        plugin.bot.sendPrivateMsg(plugin.mainAdmin, `〓 systool提示 〓\n[${date.format(d,'YYYY-MM-DD HH:mm:ss')}]尝试更新 (${plugin.version} => ${latestVersion}) 时出错:\n${stderr}`)
+                    } else {
+                        update_msg = `〓 systool提示 〓
+    已在 ${date.format(d,'YYYY-MM-DD HH:mm:ss')} 为您自动更新
+    systool已更新至最新版本  (${plugin.version} => ${latestVersion})
+    输入/plugin reload systool 以应用更新 
+    请不要关闭计算机,好东西就要来啦~ (bushi`
+                    // update_msg = `〓 systool提示 〓
+                    // systool有新版本拉~
+                    // 输入/plugin update systool 以更新至最新版本 (${plugin.version} => ${latestVersion})
+                    // 请不要关闭计算机,好东西就要来啦~ (bushi`
+                    // getAllGroups(bot, (key, value) => {
+                    //     // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `尝试向 ${key} 发送消息, 最新版本: ${latestVersion}`)
+                    //     plugin.bot.sendGroupMsg(key, update_msg)
+                    //     sleep(3000)
+                    // })
+                    // checkVersionEnable = false
+                        plugin.bot.sendPrivateMsg(plugin.mainAdmin, update_msg)
+               
                     }
                 })
-                update_msg = `〓 systool提示 〓
-                检测到您 ${timePeriod[0]}点到${timePeriod[1]}点 使用本插件次数较少, 已在 ${date.format(d,'YYYY-MM-DD HH:mm:ss')} 为您自动更新
-                systool已更新至最新版本  (${plugin.version} => ${latestVersion})
-                输入/plugin reload systool 以应用更新 
-                请不要关闭计算机,好东西就要来啦~ (bushi`
-                // update_msg = `〓 systool提示 〓
-                // systool有新版本拉~
-                // 输入/plugin update systool 以更新至最新版本 (${plugin.version} => ${latestVersion})
-                // 请不要关闭计算机,好东西就要来啦~ (bushi`
-                // getAllGroups(bot, (key, value) => {
-                //     // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `尝试向 ${key} 发送消息, 最新版本: ${latestVersion}`)
-                //     plugin.bot.sendGroupMsg(key, update_msg)
-                //     sleep(3000)
-                // })
-                // checkVersionEnable = false
-                for (admin of plugin.admins) {
-                    plugin.bot.sendPrivateMsg(admin, update_msg)
-                    sleep(500)
-                }
-            }
+             }
         } else {
             isLatestVersion = true
         }

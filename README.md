@@ -63,6 +63,7 @@ npm install kivibot-plugin-systool
 
 ## Know issues / 已知问题
 * 使用 `/cmd` 运行长时间交互式界面不会有返回值, 线程阻塞, 但不影响其他功能, `/cmd` 任可正常使用
+* 使用`/reboot bot`或`/reboot kivi`时大概率会导致机器人多个进程同时启动
 
 ## TODO
 <!-- - [x] 暂时不知道做什么 -->
