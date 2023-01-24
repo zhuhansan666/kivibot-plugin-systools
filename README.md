@@ -8,18 +8,18 @@
         综上所述 “更新日志” 应译为 “changeLog”
         END | Written By Xicrosoft. --->
 
-<details>
+<!-- <details>
 <summary> </summary>
 确信(
 <br>
 至于为什么还叫重启小助手是因为我不会在npm重命名(
-</details>
+</details> -->
 
 
 ## 我们能做什么
 * 看查帮助  ->  `/reboot help`
 * 重启系统  ->  `/reboot sys`
-* 重启框架  ->  `/reboot bot` 或 `kivi`
+* 重启框架  ->  `/reboot bot` 或 `pup`
 <!---   For Author
         “或” 不要放进 inline code 里哦
         END | Written By Xicrosoft. --->
@@ -27,7 +27,7 @@
 ## 如何安装
 ### 安装
 ```bash
-npm install kivibot-plugin-systool
+npm install pupbot-plugin-systool
 ```
 > 或在qq对机器人发送
 ```
@@ -48,7 +48,7 @@ npm install kivibot-plugin-systool
 ## 如何使用
 * 看查帮助  ->  `/reboot help`
 * 重启系统  ->  `/reboot sys` 或 `system`  *主管理员命令*
-* 重启框架  ->  `/reboot bot` 或 `kivi`  *主管理员命令*
+* 重启框架  ->  `/reboot bot` 或 `pup`  *主管理员命令*
 * 看查帮助  ->  `/cmd`
 * 运行系统命令  ->  `/cmd <system-command>`  *主管理员命令*
 * 看查帮助  ->  `/alias`
@@ -62,8 +62,8 @@ npm install kivibot-plugin-systool
 
 
 ## Know issues / 已知问题
-* 使用 `/cmd` 运行长时间交互式界面不会有返回值, 线程阻塞, 但不影响其他功能, `/cmd` 任可正常使用
-* 使用`/reboot bot`或`/reboot kivi`时大概率会导致机器人多个进程同时启动
+- [ ] 使用 `/cmd` 运行长时间交互式界面不会有返回值, 线程阻塞, 但不影响其他功能, `/cmd` 任可正常使用
+- [x] *已解决* ~~使用`/reboot bot`或`/reboot pup`时大概率会导致机器人多个进程同时启动~~
 
 ## TODO
 <!-- - [x] 暂时不知道做什么 -->

@@ -117,7 +117,7 @@ function reboot(event, params, plugin) {
 
     secondCmd = params[0]
     if (secondCmd == "help") {
-        event.reply(`〓 systool./reboot 帮助 〓\n/reboot sys/system  ->  重启系统\n/reboot bot/pup  ->  重启框架`)
+        event.reply(`〓 systool./reboot 帮助 〓\n/reboot sys/system  ->  重启系统\n/reboot bot/pup  ->  重启框架(注意：受框架回调策略影响, 执行此命令不会受到机器人回复)`)
     } else {
         if (isMainAdmin) {
             if (secondCmd == "sys" || secondCmd == "system") {
@@ -137,13 +137,16 @@ function reboot(event, params, plugin) {
             } else {
                 if (secondCmd == "bot" || secondCmd == "pup") {
                     // event.reply(`暂不支持`)
-                    event.reply(`〓 开始运行 "pup stop && pup deploy -f 〓`)
-                    const startTime = new Date().getTime()
-                    exec("pup stop && pup deploy -f", function(error, stdout, stderr) {
-                        event.reply(`〓 运行 "pup stop && pup deploy -f" 〓\n${stdout.length > 0 ? `指令输出: ${stdout}` : ""} ${stderr.length > 0 ? `指令输出: ${stderr}` : ""}共耗时${(new Date().getTime() - startTime) / 1000}秒`)
-                    
-                    });
-                    process.exit()
+                    event.reply(`〓 开始运行 "pup stop && pup deploy" 〓`)
+                    async function _tmp () {                        
+                        // sleep(3000)
+                        const startTime = new Date().getTime()
+                        exec("pup stop && pup deploy", function(error, stdout, stderr) {
+                            event.reply(`〓 运行 "pup stop && pup deploy" 〓\n${stdout.length > 0 ? `指令输出: ${stdout}` : ""} ${stderr.length > 0 ? `指令输出: ${stderr}` : ""}共耗时${(new Date().getTime() - startTime) / 1000}秒`)
+                        });
+                        process.exit()
+                    }
+                    _tmp()
                 } else {
                     event.reply(`未知的参数: "${secondCmd === undefined? '[空字符]' : secondCmd}", 输入 "/reboot help" 以获取帮助`)
                 }
@@ -152,7 +155,6 @@ function reboot(event, params, plugin) {
             event.reply(`〓 Permission Error: 非主管理员 〓`)
         }
     }
-
 }
 
 function runCmd(event, params, plugin) {

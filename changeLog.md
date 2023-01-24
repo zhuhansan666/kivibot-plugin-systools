@@ -238,6 +238,10 @@ ApiRejection { code: 1, message: 'unknown' }
 ## V1.0.0 | 2023-01-24 20:54:40
 * 对pupbot支持
 
+## V1.1.0 | 2023-01-24 21:37:39
+* 修复已知问题: 使用`/reboot bot`或`/reboot pup`时大概率会导致机器人多个进程同时启动
+* 修复多处文本问题
+
 ---
 ## index
 [TOC]
