@@ -242,6 +242,9 @@ ApiRejection { code: 1, message: 'unknown' }
 * 修复已知问题: 使用`/reboot bot`或`/reboot pup`时大概率会导致机器人多个进程同时启动
 * 修复多处文本问题
 
+## V1.1.1 | 2023-01-24 21:42:54
+* 修复自动更新后如果未重载插件导致多次自动更新的问题
+
 ---
 ## index
 [TOC]

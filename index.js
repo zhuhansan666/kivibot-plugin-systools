@@ -383,7 +383,7 @@ systool已更新至最新版本  (${plugin.version} => ${latestVersion})
                     //     plugin.bot.sendGroupMsg(key, update_msg)
                     //     sleep(3000)
                     // })
-                    // checkVersionEnable = false
+                        checkVersionEnable = false
                         plugin.bot.sendPrivateMsg(plugin.mainAdmin, update_msg)
                
                     }
