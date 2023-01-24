@@ -17,33 +17,16 @@ Gitee: https://gitee.com/zhu-hansan/kivibot-plugin-systool
 `
 
 const first_time = `〓 systool警告 〓
-由于本插件会对系统进行操作(开关机), 使用前请仔细阅读README_md帮助文档, 获取Github链接请输入/about
+由于本插件会对系统进行操作(开关机), 使用前请仔细阅读README_md帮助文档, 获取Github链接请输入"/关于" 或 "/sys" 或 "/systool"
 否则任何因使用不当造成的后果本人概不负责
 \t\t\t\t\t\t\t\t\t\t\t\t开发者: 爱喝牛奶の涛哥 20230109
-*该信息将在下次启动kivibot框架时不再提示`
+*该信息将在下次启动pupbot框架时不再提示`
 
 // const Math = require("node:Math")
 const process = require("node:process")
 const os = require("node:os")
 const exec = require('child_process').exec;
-const { KiviPlugin, http } = require('@kivibot/core')
-const { kiviConf } = require("@kivibot/core")
-try {
-    const date = require('date-and-time')
-} catch (error) {
-    exec(`npm install date-and-time --save`, function(error, stdout, stderr) {
-        if (stdout) {
-            plugin.logger.debug(stdout)
-        }
-        if (error) {
-            plugin.logger.error(error)
-        }
-        if (stderr) {
-            plugin.logger.warn(stderr)
-        }
-    })
-}
-const date = require('date-and-time')
+const { PupPlugin, http } = require('@pupbot/core')
 const iconv = require('iconv-lite');
 const encoding = 'cp936';
 const binaryEncoding = 'binary';
@@ -65,7 +48,7 @@ const defaultConfig = JSON.parse(JSON.stringify(config)) //  deepCopy, 避免con
 
 const { version } = require('./package.json')
     // const { url } = require("node:inspector")
-const plugin = new KiviPlugin('systool', version)
+const plugin = new PupPlugin('systool', version)
 
 const npmRoot = "https://registry.npmjs.org/"
     // var isLatestVersion = true;
@@ -134,7 +117,7 @@ function reboot(event, params, plugin) {
 
     secondCmd = params[0]
     if (secondCmd == "help") {
-        event.reply(`〓 systool./reboot 帮助 〓\n/reboot sys/system  ->  重启系统\n/reboot bot/kivi  ->  重启框架(此指令不稳定, 建议deploy模式下直接/exit重启机器人)`)
+        event.reply(`〓 systool./reboot 帮助 〓\n/reboot sys/system  ->  重启系统\n/reboot bot/pup  ->  重启框架`)
     } else {
         if (isMainAdmin) {
             if (secondCmd == "sys" || secondCmd == "system") {
@@ -152,16 +135,17 @@ function reboot(event, params, plugin) {
                     });
                 }
             } else {
-                if (secondCmd == "bot" || secondCmd == "kivi") {
+                if (secondCmd == "bot" || secondCmd == "pup") {
                     // event.reply(`暂不支持`)
-                    event.reply(`〓 开始运行 "/exit" 〓`)
+                    event.reply(`〓 开始运行 "pup stop && pup deploy -f 〓`)
                     const startTime = new Date().getTime()
-                    // exec("kivi deploy -f", function(error, stdout, stderr) {
-                        // event.reply(`〓 运行 "kivi deploy -f" 〓\n${stdout.length > 0 ? `指令输出: ${stdout}` : ""} ${stderr.length > 0 ? `指令输出: ${stderr}` : ""}共耗时${(new Date().getTime() - startTime) / 1000}秒`)
+                    exec("pup stop && pup deploy -f", function(error, stdout, stderr) {
+                        event.reply(`〓 运行 "pup stop && pup deploy -f" 〓\n${stdout.length > 0 ? `指令输出: ${stdout}` : ""} ${stderr.length > 0 ? `指令输出: ${stderr}` : ""}共耗时${(new Date().getTime() - startTime) / 1000}秒`)
+                    
+                    });
                     process.exit()
-                    // });
                 } else {
-                    event.reply(`未知的参数: "${secondCmd}", 输入 "/reboot help" 以获取帮助`)
+                    event.reply(`未知的参数: "${secondCmd === undefined? '[空字符]' : secondCmd}", 输入 "/reboot help" 以获取帮助`)
                 }
             }
         } else {
@@ -345,7 +329,7 @@ function getLatestUsing(maxNum = false) {
 }
 
 async function checkUpdate(bot, admins) {
-    npmUrl = `${npmRoot}kivibot-plugin-${plugin.name}/latest`
+    npmUrl = `${npmRoot}pupbot-plugin-${plugin.name}/latest`
     // plugin.logger.info(`Check Update from ${npmUrl}`)
     // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `正在从 ${npmUrl} 检查更新 (当前时间: ${new Date().getTime()}, 上次检查更新在: ${latestCheckUpdateTime > -1 ? latestCheckUpdateTime : "本次为打开框架首次检测"})`)
     latestCheckUpdateTime = new Date().getTime()
@@ -371,23 +355,23 @@ async function checkUpdate(bot, admins) {
             if (true) {
                 d = new Date()
                 plugin.bot.sendPrivateMsg(plugin.mainAdmin, `〓 systool提示 〓\n尝试更新: (${plugin.version} => ${latestVersion})`)
-                exec(`npm install kivibot-plugin-${plugin.name}@${latestVersion} --save`, function(error, stdout, stderr) {
+                exec(`npm install pupbot-plugin-${plugin.name}@${latestVersion} --save`, function(error, stdout, stderr) {
                     if (stdout) {
                         plugin.logger.debug(stdout)
                     }
                     if (error) {
                         plugin.logger.error(error)
-                        plugin.bot.sendPrivateMsg(plugin.mainAdmin, `〓 systool提示 〓\n[${date.format(d,'YYYY-MM-DD HH:mm:ss')}]尝试更新 (${plugin.version} => ${latestVersion}) 时出错:\n${error.stack}`)
+                        plugin.bot.sendPrivateMsg(plugin.mainAdmin, `〓 systool提示 〓\n尝试更新 (${plugin.version} => ${latestVersion}) 时出错:\n${error.stack}`)
                     }
                     if (stderr ) {
                         plugin.logger.warn(stderr)
-                        plugin.bot.sendPrivateMsg(plugin.mainAdmin, `〓 systool提示 〓\n[${date.format(d,'YYYY-MM-DD HH:mm:ss')}]尝试更新 (${plugin.version} => ${latestVersion}) 时出错:\n${stderr}`)
+                        plugin.bot.sendPrivateMsg(plugin.mainAdmin, `〓 systool提示 〓\n尝试更新 (${plugin.version} => ${latestVersion}) 时出错:\n${stderr}`)
                     } else {
                         update_msg = `〓 systool提示 〓
-    已在 ${date.format(d,'YYYY-MM-DD HH:mm:ss')} 为您自动更新
-    systool已更新至最新版本  (${plugin.version} => ${latestVersion})
-    输入/plugin reload systool 以应用更新 
-    请不要关闭计算机,好东西就要来啦~ (bushi`
+已为您自动更新
+systool已更新至最新版本  (${plugin.version} => ${latestVersion})
+输入/plugin reload systool 以应用更新 
+请不要关闭计算机,好东西就要来啦~ (bushi`
                     // update_msg = `〓 systool提示 〓
                     // systool有新版本拉~
                     // 输入/plugin update systool 以更新至最新版本 (${plugin.version} => ${latestVersion})
