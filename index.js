@@ -111,6 +111,15 @@ async function hooker(event, params, plugin, func) {
     }
 }
 
+async function restartBot() {
+    // sleep(3000)
+    const startTime = new Date().getTime()
+    exec("pup stop && pup deploy", function(error, stdout, stderr) {
+                event.reply(`〓 运行 "pup stop && pup deploy" 〓\n${stdout.length > 0 ? `指令输出: ${stdout}` : ""} ${stderr.length > 0 ? `指令输出: ${stderr}` : ""}共耗时${(new Date().getTime() - startTime) / 1000}秒`)
+    });
+    process.exit()
+}
+
 function reboot(event, params, plugin) {
     // 是否是主管理员
     const isMainAdmin = isAdmin(event, true);
@@ -138,15 +147,7 @@ function reboot(event, params, plugin) {
                 if (secondCmd == "bot" || secondCmd == "pup") {
                     // event.reply(`暂不支持`)
                     event.reply(`〓 开始运行 "pup stop && pup deploy" 〓`)
-                    async function _tmp () {                        
-                        // sleep(3000)
-                        const startTime = new Date().getTime()
-                        exec("pup stop && pup deploy", function(error, stdout, stderr) {
-                            event.reply(`〓 运行 "pup stop && pup deploy" 〓\n${stdout.length > 0 ? `指令输出: ${stdout}` : ""} ${stderr.length > 0 ? `指令输出: ${stderr}` : ""}共耗时${(new Date().getTime() - startTime) / 1000}秒`)
-                        });
-                        process.exit()
-                    }
-                    _tmp()
+                    restartBot()
                 } else {
                     event.reply(`未知的参数: "${secondCmd === undefined? '[空字符]' : secondCmd}", 输入 "/reboot help" 以获取帮助`)
                 }
@@ -360,33 +361,28 @@ async function checkUpdate(bot, admins) {
                 exec(`npm install pupbot-plugin-${plugin.name}@${latestVersion} --save`, function(error, stdout, stderr) {
                     if (stdout) {
                         plugin.logger.debug(stdout)
+                        return
                     }
                     if (error) {
                         plugin.logger.error(error)
                         plugin.bot.sendPrivateMsg(plugin.mainAdmin, `〓 systool提示 〓\n尝试更新 (${plugin.version} => ${latestVersion}) 时出错:\n${error.stack}`)
+                        return
                     }
                     if (stderr ) {
                         plugin.logger.warn(stderr)
                         plugin.bot.sendPrivateMsg(plugin.mainAdmin, `〓 systool提示 〓\n尝试更新 (${plugin.version} => ${latestVersion}) 时出错:\n${stderr}`)
-                    } else {
-                        update_msg = `〓 systool提示 〓
+                        return
+                    }
+// 输入/plugin reload systool 以应用更新 
+                    update_msg = `〓 systool提示 〓
 已为您自动更新
 systool已更新至最新版本  (${plugin.version} => ${latestVersion})
-输入/plugin reload systool 以应用更新 
-请不要关闭计算机,好东西就要来啦~ (bushi`
-                    // update_msg = `〓 systool提示 〓
-                    // systool有新版本拉~
-                    // 输入/plugin update systool 以更新至最新版本 (${plugin.version} => ${latestVersion})
-                    // 请不要关闭计算机,好东西就要来啦~ (bushi`
-                    // getAllGroups(bot, (key, value) => {
-                    //     // plugin.bot.sendPrivateMsg(plugin.mainAdmin, `尝试向 ${key} 发送消息, 最新版本: ${latestVersion}`)
-                    //     plugin.bot.sendGroupMsg(key, update_msg)
-                    //     sleep(3000)
-                    // })
+即将重启框架以重载插件, 请稍侯...
+请不要关闭计算机或手动关闭pupbot`
                         checkVersionEnable = false
                         plugin.bot.sendPrivateMsg(plugin.mainAdmin, update_msg)
-               
-                    }
+                        sleep(3000)
+                        restartBot()
                 })
              }
         } else {
