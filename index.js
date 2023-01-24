@@ -32,6 +32,7 @@ const encoding = 'cp936';
 const binaryEncoding = 'binary';
 
 const config = {
+    "update-at-lasttime": false,
     "start-time": true,
     "latest-start-time": undefined,
     "latest-exit-time": undefined,
@@ -381,6 +382,8 @@ systool已更新至最新版本  (${plugin.version} => ${latestVersion})
 请不要关闭计算机或手动关闭pupbot`
                         checkVersionEnable = false
                         plugin.bot.sendPrivateMsg(plugin.mainAdmin, update_msg)
+                        config["update-at-lasttime"] = true // 设置是上一次更新
+                        plugin.saveConfig(config)
                         sleep(3000)
                         restartBot()
                 })
@@ -437,6 +440,11 @@ ${ipMsg}
 
 plugin.onMounted((bot, admins) => {
     reloadConfig()
+    if (config["update-at-lasttime"]) {
+        plugin.bot.sendPrivateMsg(plugin.mainAdmin, `〓 systool更新成功 〓\n当前版本 ${plugin.version}`)
+        config["update-at-lasttime"] = false
+        plugin.saveConfig(config)
+    }
     plugin.onCmd(config["commands"]["reboot"], (event, params) => hooker(event, params, plugin, reboot))
     plugin.onCmd(config["commands"]["cmd"], (event, params) => hooker(event, params, plugin, runCmd))
     plugin.onCmd(config["commands"]["alias"], (event, params) => hooker(event, params, plugin, alias))
