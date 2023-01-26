@@ -43,6 +43,9 @@ const config = {
         "ip": ["/ip"],
         "ncmd": ["/ncmd"],
         "about": ["/关于", "/sys", "/systool"]
+    },
+    "status": {
+        "ncmd": false
     }
 }
 
@@ -75,12 +78,16 @@ async function reloadConfig() {
     plugin.saveConfig(Object.assign(config, plugin.loadConfig()))
     if (config["start-time"] != false && config["start-time"] != true) {
         config["start-time"] = true
-        plugin.saveConfig(config)
     }
     config["latest-start-time"] = new Date().getTime()
     for (let key of Object.keys(defaultConfig["commands"])) {
         if (config["commands"][key] == undefined) {
             config["commands"][key] = defaultConfig["commands"][key]
+        }
+    }
+    for (let key of Object.keys(defaultConfig["status"])) {
+        if (config["status"][key] == undefined) {
+            config["status"][key] = defaultConfig["status"][key]
         }
     }
     plugin.saveConfig(config)
@@ -279,6 +286,24 @@ async function alias(event, params, plugin) {
 }
 
 async function about(event, params, plugin) {
+    if (event.raw_message.split(" ")[0] == "/systool" && isAdmin(event, true)) {
+        if (params[0] != undefined && params[0].toLowerCase() == "ncmd") {
+            if (params[1] != undefined && params[1] == "on") {
+                config["status"]["ncmd"] = true
+                plugin.saveConfig(config)
+                event.reply(`已启用ncmd普通用户使用`)
+                return
+            } else if (params[1] != undefined && params[1] == "off") {
+                config["status"]["ncmd"] = false
+                plugin.saveConfig(config)
+                event.reply(`已禁用ncmd普通用户使用`)
+                return
+            } else if (params[1] != undefined && params[1] == "status") {
+                event.reply(`当前ncmd普通用户使用状态: ${config["status"]["ncmd"] === true ? '启用' : '禁用'}`)
+                return
+            }
+        }
+    }
     event.reply(about_string)
 }
 
@@ -440,24 +465,44 @@ ${ipMsg}
     }
 }
 
+function replaceWithArr(_string, _arr) {
+    for (let i = 0; i < _arr.length; i++) {
+        _item = _arr[i]
+        _string = _string.replace(`${_item[0]}`, _item[1] != undefined ? `${_item[1]}` : "")
+    }
+    return _string
+}
+
 async function nodeCmd(event, param, plugin) {
-    if (!isAdmin(event, true)) {
-        event.reply(`Permission Error: 非主管理员`, true)
-        return
-    }
     if (param[0] == undefined) {
-        event.reply(`# systool./ncmd帮助 #\n/ncmd <nodejs-code/code-block>`, true)
+        event.reply(`〓 systool./ncmd帮助 〓\n/ncmd <nodejs-code/code-block>  ->  运行nodejs代码/代码块`, true)
         return
     }
-    command = event.raw_message.split(" ", 1)[0]
-    cmdString = event.raw_message.slice(command.length + 1, event.raw_message.length)
-    event.reply(`开始执行`, true)
-    startTime = new Date()
-    try {
-        result = eval(cmdString)
-        event.reply(`# 运行成功 #\n返回值:\n${result}\n耗时${(new Date().getTime() - startTime.getTime()) / 1000}秒`, true)
-    } catch(error) {
-        event.reply(`# 运行失败 #\n错误:\n${error.stack}\n耗时${(new Date().getTime() - startTime.getTime()) / 1000}秒`, true)
+    if (isAdmin(event, true)) {
+        command = event.raw_message.split(" ", 1)[0]
+        cmdString = event.raw_message.slice(command.length + 1, event.raw_message.length)
+        event.reply(`开始执行`, true)
+        startTime = new Date()
+        try {
+            result = eval(cmdString)
+            event.reply(`〓 运行成功 〓\n返回值:\n${result}\n耗时${(new Date().getTime() - startTime.getTime()) / 1000}秒`, true)
+        } catch(error) {
+            event.reply(`〓 运行失败 〓\n${error.stack}\n耗时${(new Date().getTime() - startTime.getTime()) / 1000}秒`, true)
+        }
+    } else if (config["status"]["ncmd"] === true) {
+        command = event.raw_message.split(" ", 1)[0]
+        cmdString = event.raw_message.slice(command.length + 1, event.raw_message.length)
+        cmdString = replaceWithArr(cmdString, [["exec", ""], ["eval", ""], ["file", ""], ["read", ""], ["write", ""], ["Sync", ""], ["sync", ""]])
+        event.reply(`开始执行 (您不是主管理员, 您将无法执行部分函数)\n代码段已自动转换危险函数:\n${cmdString}`, true)
+        startTime = new Date()
+        try {
+            result = eval(cmdString)
+            event.reply(`〓 运行成功 〓\n返回值:\n${result}\n耗时${(new Date().getTime() - startTime.getTime()) / 1000}秒`, true)
+        } catch(error) {
+            event.reply(`〓 运行失败 〓\n${error.stack}\n耗时${(new Date().getTime() - startTime.getTime()) / 1000}秒`, true)
+        }
+    } else {
+        event.reply(`Permission Error: 非主管理员`, true)
     }
 }
 
@@ -487,6 +532,7 @@ plugin.onMounted((bot, admins) => {
         }
     })
     process.on('exit', (exitcode) => { 
+        plugin.bot.sendPrivateMsg(plugin.mainAdmin, `pupbot 已退出`)
         config["start-time"] = false
         config["latest-exit-time"] = new Date().getTime()
         plugin.saveConfig(config)

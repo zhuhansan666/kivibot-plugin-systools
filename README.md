@@ -60,6 +60,7 @@ npm install pupbot-plugin-systool
 * 获取公网ip  ->  `/ip`  *管理员命令*
 * 获取公网ip(包含归属地)  ->  `/ip -p`  *管理员命令*
 * 执行`nodejs`代码(块)  ->  `/ncmd <nodejs-code/code-block>`  *主管理员命令*
+* 启用/禁用/看查状态`/ncmd`普通人可执行(有防注入)  ->  `/systool ncmd on/off/status`  *主管理员命令*
 
 
 ## Know issues / 已知问题
