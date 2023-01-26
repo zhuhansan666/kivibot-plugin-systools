@@ -59,6 +59,7 @@ npm install pupbot-plugin-systool
     >上述两条指令空格均不能省略, 指令b必须存在, a必须以"/"开头
 * 获取公网ip  ->  `/ip`  *管理员命令*
 * 获取公网ip(包含归属地)  ->  `/ip -p`  *管理员命令*
+* 执行`nodejs`代码(块)  ->  `/ncmd <nodejs-code/code-block>`  *主管理员命令*
 
 
 ## Know issues / 已知问题

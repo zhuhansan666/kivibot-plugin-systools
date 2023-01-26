@@ -41,6 +41,7 @@ const config = {
         "reboot": ["/reboot", "/r"],
         "alias": ["/alias", "/a", "/unalias", "/ua"],
         "ip": ["/ip"],
+        "ncmd": ["/ncmd"],
         "about": ["/关于", "/sys", "/systool"]
     }
 }
@@ -382,6 +383,7 @@ systool已更新至最新版本  (${plugin.version} => ${latestVersion})
 请不要关闭计算机或手动关闭pupbot`
                         checkVersionEnable = false
                         plugin.bot.sendPrivateMsg(plugin.mainAdmin, update_msg)
+                        // 不加这一段是可以的
                         config["update-at-lasttime"] = true // 设置是上一次更新
                         plugin.saveConfig(config)
                         sleep(3000)
@@ -438,6 +440,27 @@ ${ipMsg}
     }
 }
 
+function nodeCmd(event, param, plugin) {
+    if (!isAdmin(event, true)) {
+        event.reply(`Permission Error: 非主管理员`, true)
+        return
+    }
+    if (param[0] == undefined) {
+        event.reply(`# systool./ncmd帮助 #\n/ncmd <nodejs-code/code-block>`, true)
+        return
+    }
+    command = event.raw_message.split(" ", 1)[0]
+    cmdString = event.raw_message.slice(command.length + 1, event.raw_message.length)
+    startTime = new Date()
+    event.reply(`开始执行`, true)
+    try {
+        result = eval(cmdString)
+        event.reply(`# 运行成功 #\n返回值:\n${result}\n耗时${(new Date().getTime() - startTime.getTime()) / 1000}秒`)
+    } catch(error) {
+        event.reply(`# 运行失败 #\n错误:\n${error.stack}\n耗时${(new Date().getTime() - startTime.getTime()) / 1000}秒`)
+    }
+}
+
 plugin.onMounted((bot, admins) => {
     reloadConfig()
     if (config["update-at-lasttime"]) {
@@ -450,6 +473,7 @@ plugin.onMounted((bot, admins) => {
     plugin.onCmd(config["commands"]["alias"], (event, params) => hooker(event, params, plugin, alias))
     plugin.onCmd(config["commands"]["about"], (event, params) => hooker(event, params, plugin, about))
     plugin.onCmd(config["commands"]["ip"], (event, params) => hooker(event, params, plugin, ip))
+    plugin.ocCmd(config["commands"]["ncmd"],(event, params) => hooker(event, params, plugin, nodeCmd) )
     plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, (event, params, plugin) => {
         throw Error("错误测试")
     })) //  用于错误信息测试;
