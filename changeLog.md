@@ -253,6 +253,9 @@ ApiRejection { code: 1, message: 'unknown' }
 
 ## V1.1.4 | 2023-01-26 12:05:56
 * 新增`/ncmd`命令, 可执行`nodjs`代码/代码块
+  
+## V1.1.5 | 2023-01-26 12:05:56
+* 修复`/ncmd`无效的问题
 
 ---
 ## index

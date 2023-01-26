@@ -101,7 +101,7 @@ async function hooker(event, params, plugin, func) {
     // config["using-count"][new Date().getHours()] += 1 // 使用计数
     checkStartAtFirstTime(event, plugin)
     try {
-        func(event, params, plugin)
+        await func(event, params, plugin)
     } catch (error) {
         try {
             var funcname = func.name
@@ -122,7 +122,7 @@ async function restartBot() {
     process.exit()
 }
 
-function reboot(event, params, plugin) {
+async function reboot(event, params, plugin) {
     // 是否是主管理员
     const isMainAdmin = isAdmin(event, true);
 
@@ -160,7 +160,7 @@ function reboot(event, params, plugin) {
     }
 }
 
-function runCmd(event, params, plugin) {
+async function runCmd(event, params, plugin) {
     secondCmd = params[0]
     if (secondCmd == undefined) {
         event.reply(`〓 systool./cmd帮助 〓\n使用/cmd <system-command>执行系统命令`)
@@ -265,7 +265,7 @@ function alias_rm(event, params, plugin) {
     }
 }
 
-function alias(event, params, plugin) {
+async function alias(event, params, plugin) {
     if (event.raw_message.indexOf("/u") == -1) {
         console.log("alias_add")
         alias_add(event, params, plugin)
@@ -278,7 +278,7 @@ function alias(event, params, plugin) {
     }
 }
 
-function about(event, params, plugin) {
+async function about(event, params, plugin) {
     event.reply(about_string)
 }
 
@@ -440,7 +440,7 @@ ${ipMsg}
     }
 }
 
-function nodeCmd(event, param, plugin) {
+async function nodeCmd(event, param, plugin) {
     if (!isAdmin(event, true)) {
         event.reply(`Permission Error: 非主管理员`, true)
         return
@@ -451,13 +451,13 @@ function nodeCmd(event, param, plugin) {
     }
     command = event.raw_message.split(" ", 1)[0]
     cmdString = event.raw_message.slice(command.length + 1, event.raw_message.length)
-    startTime = new Date()
     event.reply(`开始执行`, true)
+    startTime = new Date()
     try {
         result = eval(cmdString)
-        event.reply(`# 运行成功 #\n返回值:\n${result}\n耗时${(new Date().getTime() - startTime.getTime()) / 1000}秒`)
+        event.reply(`# 运行成功 #\n返回值:\n${result}\n耗时${(new Date().getTime() - startTime.getTime()) / 1000}秒`, true)
     } catch(error) {
-        event.reply(`# 运行失败 #\n错误:\n${error.stack}\n耗时${(new Date().getTime() - startTime.getTime()) / 1000}秒`)
+        event.reply(`# 运行失败 #\n错误:\n${error.stack}\n耗时${(new Date().getTime() - startTime.getTime()) / 1000}秒`, true)
     }
 }
 
@@ -473,11 +473,19 @@ plugin.onMounted((bot, admins) => {
     plugin.onCmd(config["commands"]["alias"], (event, params) => hooker(event, params, plugin, alias))
     plugin.onCmd(config["commands"]["about"], (event, params) => hooker(event, params, plugin, about))
     plugin.onCmd(config["commands"]["ip"], (event, params) => hooker(event, params, plugin, ip))
-    plugin.ocCmd(config["commands"]["ncmd"],(event, params) => hooker(event, params, plugin, nodeCmd) )
+    // plugin.ocCmd(config["commands"]["ncmd"], (event, params) => hooker(event, params, plugin, nodeCmd))
+    plugin.onCmd('/ncmd', (event, params) => hooker(event, params, plugin, nodeCmd))
     plugin.onCmd('/test', (event, params) => hooker(event, params, plugin, (event, params, plugin) => {
         throw Error("错误测试")
     })) //  用于错误信息测试;
-    updateChecker = plugin.cron('*/1 * * * *', (bot, admins) => checkUpdate(bot, admins))
+    updateChecker = plugin.cron('*/1 * * * *', (bot, admins) => async function(){
+        try {
+            await checkUpdate(bot, admins)
+        } catch (error) {
+            console.log(`${plugin.name} 检查更新错误:\n${error.stack}`)
+            plugin.logger.error(error)
+        }
+    })
     process.on('exit', (exitcode) => { 
         config["start-time"] = false
         config["latest-exit-time"] = new Date().getTime()
