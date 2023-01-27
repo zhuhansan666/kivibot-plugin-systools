@@ -528,7 +528,7 @@ async function nodeCmd(event, param, plugin) {
     }
 }
 
-plugin.onMounted((bot, admins) => {
+function onMounted() {
     reloadConfig()
     if (config["update-at-lasttime"]) {
         plugin.bot.sendPrivateMsg(plugin.mainAdmin, `〓 systool更新成功 〓\n当前版本 ${plugin.version}`)
@@ -559,6 +559,15 @@ plugin.onMounted((bot, admins) => {
         config["latest-exit-time"] = new Date().getTime()
         plugin.saveConfig(config)
     })
+}
+
+plugin.onMounted((bot, admins) => {
+    try {
+        onMounted()
+    } catch(error) {
+        plugin.logger.error(error)
+        plugin.bot.sendPrivateMsg(plugin.mainAdmin, `挂载${plugin.name}错误, 请将其发送给开发者 email: public.zhuhansan666@outlook.com\n${error.stack}`)
+    }
 })
 
 plugin.onUnmounted(() => {
