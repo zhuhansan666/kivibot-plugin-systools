@@ -65,6 +65,17 @@ var checkVersionEnable = true
 //     return Math.floor(Math.random() * (max - min + 1)) + min;
 // }
 
+function isAsyncFunc(func) {
+    if (!typeof obj === "function") {
+        return null
+    }
+    try {
+        return func[Symbol.toStringTag] === "AsyncFunction"
+    } catch (error) {
+        return null
+    }
+}
+
 function sleep(ms) {
     const start = new Date().getTime()
     while (true) {
@@ -101,6 +112,14 @@ function isAdmin(event, mainOnly = false) {
     }
 }
 
+function getFuncName(func) {
+    try {
+        return funcname = func.name
+    } catch (err) {
+        return funcname = '[未知的函数名称]'
+    }
+}
+
 async function hooker(event, params, plugin, func) {
     /**
      * 本函数用于hook错误, 在发生错误时发送错误信息到qq
@@ -108,13 +127,16 @@ async function hooker(event, params, plugin, func) {
     // config["using-count"][new Date().getHours()] += 1 // 使用计数
     checkStartAtFirstTime(event, plugin)
     try {
-        await func(event, params, plugin)
-    } catch (error) {
-        try {
-            var funcname = func.name
-        } catch (err) {
-            var funcname = undefined
+        if (isAsyncFunc(func) === true) {
+            await func(event, params, plugin)
+        } else if (isAsyncFunc(func) === false) {
+            func(event, params, plugin)
+        } else {
+            err = new TypeError(`${getFuncName(func)} is not a function`)
+            throw err
         }
+    } catch (error) {
+        funcname = getFuncName(func)
         const msg = `〓 糟糕！systool运行"${funcname}"发生错误, 请您坐和放宽, 下面是详细错误信息(好东西就要莱纳~) 〓\n${error.stack}\n(如有需要请发送邮件至开发者 public.zhuhansan666@outlook.com 备注 systool:bug)`
         event.reply(msg)
     }

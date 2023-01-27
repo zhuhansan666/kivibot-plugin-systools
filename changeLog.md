@@ -260,6 +260,9 @@ ApiRejection { code: 1, message: 'unknown' }
 ## V1.1.6 | 2023-01-26 19:33:48
 * 新增启用/禁用/看查状态`/ncmd`普通人可执行(有防注入)  ->  `/systool ncmd on/off/status`
 
+## V1.1.7 | 2023-01-27 20:28:17
+* 修复插件挂载错误: `{}`（大概罢
+
 ---
 ## index
 [TOC]
