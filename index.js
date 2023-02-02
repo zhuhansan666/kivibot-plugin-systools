@@ -1,4 +1,5 @@
 const about_string = `〓 关于systool 〓
+当前版本: #{plugin.version}
 本插件由"爱喝牛奶の涛哥"制作, 使用commonjs标准
 本插件完全免费, bug反馈可发送邮件至public.zhuhansan666@outlook.com 备注 systool:bug
 本插件采用GNU3.0协议, 请自觉遵循
@@ -38,7 +39,7 @@ const config = {
     "latest-exit-time": undefined,
     "commands": {
         "cmd": ["/cmd", "/c"],
-        "reboot": ["/reboot", "/r"],
+        "reboot": ["/sreboot", "/r"],
         "alias": ["/alias", "/a", "/unalias", "/ua"],
         "ip": ["/ip"],
         "ncmd": ["/ncmd"],
@@ -142,7 +143,7 @@ async function hooker(event, params, plugin, func) {
     }
 }
 
-async function restartBot() {
+async function restartBot(event) {
     // sleep(3000)
     const startTime = new Date().getTime()
     exec("pup stop && pup deploy", function(error, stdout, stderr) {
@@ -157,18 +158,18 @@ async function reboot(event, params, plugin) {
 
     secondCmd = params[0]
     if (secondCmd == "help") {
-        event.reply(`〓 systool./reboot 帮助 〓\n/reboot sys/system  ->  重启系统\n/reboot bot/pup  ->  重启框架(注意：受框架回调策略影响, 执行此命令不会受到机器人回复)`)
+        event.reply(`〓 systool./sreboot 帮助 〓\n/sreboot sys/system  ->  重启系统\n/sreboot bot/pup  ->  重启框架`)
     } else {
         if (isMainAdmin) {
             if (secondCmd == "sys" || secondCmd == "system") {
                 if (os.type() == "Linux" || os.type() == "Darwin") {
-                    event.reply(`〓 开始运行 "reboot" 〓`)
+                    await event.reply(`〓 开始运行 "reboot" 〓`)
                     const startTime = new Date().getTime()
                     exec("reboot", function(error, stdout, stderr) {
-                                event.reply(`〓 运行 "reboot" 〓\n${stdout.length > 0 ? `指令输出: ${stdout}` : ""} ${stderr.length > 0 ? `指令输出: ${stderr}` : ""}共耗时${(new Date().getTime() - startTime) / 1000}秒`)
+                        event.reply(`〓 运行 "reboot" 〓\n${stdout.length > 0 ? `指令输出: ${stdout}` : ""} ${stderr.length > 0 ? `指令输出: ${stderr}` : ""}共耗时${(new Date().getTime() - startTime) / 1000}秒`)
                     });
                 } else {
-                    event.reply(`〓 开始运行 "shutdown /f /r /t 3" 〓`)
+                    await event.reply(`〓 开始运行 "shutdown /f /r /t 3" 〓`)
                     const startTime = new Date().getTime()
                     exec("shutdown /f /r /t 3", function(error, stdout, stderr) {
                         event.reply(`〓 运行 "shutdown /f /r /t 3" 〓\n${stdout.length > 0 ? `指令输出: ${stdout}` : ""} ${stderr.length > 0 ? `指令输出: ${stderr}` : ""}共耗时${(new Date().getTime() - startTime) / 1000}秒`)
@@ -177,10 +178,10 @@ async function reboot(event, params, plugin) {
             } else {
                 if (secondCmd == "bot" || secondCmd == "pup") {
                     // event.reply(`暂不支持`)
-                    event.reply(`〓 开始运行 "pup stop && pup deploy" 〓`)
-                    restartBot()
+                    await event.reply(`〓 开始运行 "pup stop && pup deploy" 〓`)
+                    restartBot(event)
                 } else {
-                    event.reply(`未知的参数: "${secondCmd === undefined? '[空字符]' : secondCmd}", 输入 "/reboot help" 以获取帮助`)
+                    event.reply(`未知的参数: "${secondCmd === undefined? '[空字符]' : secondCmd}", 输入 "/sreboot help" 以获取帮助`)
                 }
             }
         } else {
@@ -326,7 +327,7 @@ async function about(event, params, plugin) {
             }
         }
     }
-    event.reply(about_string)
+    event.reply(about_string.replace('#{plugin.version}', plugin.version))
 }
 
 function checkStartAtFirstTime(event, plugin) {
@@ -553,8 +554,8 @@ function onMounted() {
             plugin.logger.error(error)
         }
     })
-    process.on('exit', (exitcode) => { 
-        plugin.bot.sendPrivateMsg(plugin.mainAdmin, `pupbot 已退出`)
+    process.on('exit', async function(exitcode) { 
+        await plugin.bot.sendPrivateMsg(plugin.mainAdmin, `pupbot 已退出`)
         config["start-time"] = false
         config["latest-exit-time"] = new Date().getTime()
         plugin.saveConfig(config)

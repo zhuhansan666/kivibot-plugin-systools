@@ -17,9 +17,9 @@
 
 
 ## 我们能做什么
-* 看查帮助  ->  `/reboot help`
-* 重启系统  ->  `/reboot sys`
-* 重启框架  ->  `/reboot bot` 或 `pup`
+* 看查帮助  ->  `/sreboot help`
+* 重启系统  ->  `/sreboot sys`
+* 重启框架  ->  `/sreboot bot` 或 `pup`
 <!---   For Author
         “或” 不要放进 inline code 里哦
         END | Written By Xicrosoft. --->
@@ -46,9 +46,9 @@ npm install pupbot-plugin-systool
 
 
 ## 如何使用
-* 看查帮助  ->  `/reboot help`
-* 重启系统  ->  `/reboot sys` 或 `system`  *主管理员命令*
-* 重启框架  ->  `/reboot bot` 或 `pup`  *主管理员命令*
+* 看查帮助  ->  `/sreboot help`
+* 重启系统  ->  `/sreboot sys` 或 `system`  *主管理员命令*
+* 重启框架  ->  `/sreboot bot` 或 `pup`  *主管理员命令*
 * 看查帮助  ->  `/cmd`
 * 运行系统命令  ->  `/cmd <system-command>`  *主管理员命令*
 * 看查帮助  ->  `/alias`
